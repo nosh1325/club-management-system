@@ -2,21 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
-
 import { z } from 'zod'
 
-
-const membershipActionSchema = z.object({
+const membershipActionSchema = z.object({ //validation schema for membership actions
   membershipIds: z.array(z.string()).min(1, 'At least one membership ID is required'),
   action: z.enum(['approve', 'reject']),
   reason: z.string().optional(),
-  roleAssignments: z.array(z.object({
+  roleAssignments: z.array(z.object({ //each array item is an object
     membershipId: z.string(),
     role: z.enum(['General Member', 'Executive', 'Senior Executive'])
   })).optional()
 })
 
-// GET - Get pending memberships for club leader's clubs
+//Get pending memberships for club leader's clubs
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -38,13 +36,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
 
-    console.log('User details:', { id: user.id, email: user.email, role: user.role }) // Debug log
+    console.log('User details:', { id: user.id, email: user.email, role: user.role }) 
 
     let clubs;
 
 
     if (user.email === 'leader@bracu.ac.bd') {
-      // Super club leader can access all clubs
+      //super club leader can access all clubs
       console.log('Super leader accessing all clubs') 
       clubs = await db.club.findMany({
         include: {
@@ -84,7 +82,7 @@ export async function GET(request: NextRequest) {
       
       console.log('Club leader, looking for clubs with leaderId:', user.id) 
       
-      
+      //all clubs and leaders
       const allClubs = await db.club.findMany({
         select: {
           id: true,
@@ -101,6 +99,7 @@ export async function GET(request: NextRequest) {
       })
       console.log('All clubs and their leaders:', allClubs) 
       
+      //all memberships where current user is leader
       clubs = await db.club.findMany({
         where: { 
           leaderId: user.id  // clubs where current user is the leader
@@ -138,7 +137,7 @@ export async function GET(request: NextRequest) {
           }
         }
       })
-      console.log('Found clubs for user:', clubs.map(c => c.name)) // Debug log
+      console.log('Found clubs for user:', clubs.map(c => c.name)) 
     }
 
     if (!clubs || clubs.length === 0) {
@@ -187,7 +186,7 @@ export async function GET(request: NextRequest) {
     console.log(' Total memberships across all clubs:', allMemberships.length) 
 
     return NextResponse.json({
-      
+      //first leading club
       club: clubs.length > 0 ? {
         id: clubs[0].id,
         name: clubs[0].name,
@@ -212,7 +211,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PUT - Bulk approve/reject memberships
+// PUT - approve/reject memberships multiple
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -221,10 +220,10 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get user data
+    // Get user session data to check if club leader
     const user = await db.user.findUnique({
       where: { email: session.user.email },
-      select: { id: true, role: true }
+      select: { id: true, role: true , email: true}
     })
 
     if (!user) {
@@ -250,7 +249,7 @@ export async function PUT(request: NextRequest) {
       where: {
         id: { in: validatedData.membershipIds },
         status: 'PENDING',
-        ...(user.role === 'CLUB_LEADER' && {
+        ...(user.role === 'CLUB_LEADER' && user.email !== 'leader@bracu.ac.bd' &&{
           club: {
             leaderId: user.id
           }
@@ -273,14 +272,14 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    // Update membership statuses
+    //updating membership status
     const newStatus = validatedData.action === 'approve' ? 'ACCEPTED' : 'REJECTED'
     const joinedAt = validatedData.action === 'approve' ? new Date() : null
 
     
     const updatedMemberships = []
     for (const membership of memberships) {
-      const assignedRole = roleMap.get(membership.id) || 'General Member'
+      const assignedRole = roleMap.get(membership.id) || 'General Member' //lookup for role
       
       const updated = await db.membership.update({
         where: { id: membership.id },
@@ -295,11 +294,11 @@ export async function PUT(request: NextRequest) {
           club: { select: { name: true } }
         }
       })
-      updatedMemberships.push(updated)
+      updatedMemberships.push(updated) //adding membership to updated list
     }
 
 
-
+    //response message 
     return NextResponse.json({
       message: `Successfully ${validatedData.action}d ${updatedMemberships.length} membership(s)`,
       count: updatedMemberships.length,

@@ -8,20 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
-import { 
-  Users, 
-  Search, 
-  Check, 
-  X, 
-  Clock, 
-  Mail, 
-  GraduationCap,
-  Building2,
-  Calendar,
-  AlertCircle,
-  CheckCircle2,
-  UserCog
-} from 'lucide-react'
+import { Users, Search, Check, X, Clock, Mail, GraduationCap,Building2,Calendar,UserCog} from 'lucide-react'
 
 interface PendingMembership {
   id: string
@@ -44,18 +31,18 @@ interface PendingMembership {
 export default function ClubLeaderMembershipsPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [memberships, setMemberships] = useState<PendingMembership[]>([])
-  const [filteredMemberships, setFilteredMemberships] = useState<PendingMembership[]>([])
-  const [clubs, setClubs] = useState<any[]>([])
+  const [memberships, setMemberships] = useState<PendingMembership[]>([]) //pending memberships array
+  const [filteredMemberships, setFilteredMemberships] = useState<PendingMembership[]>([]) //filtered results
+  const [clubs, setClubs] = useState<any[]>([]) //clubs managed by leader
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
   const [selectedMemberships, setSelectedMemberships] = useState<Set<string>>(new Set())
   const [processing, setProcessing] = useState(false)
   const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null)
-  const [roleAssignments, setRoleAssignments] = useState<Map<string, string>>(new Map())
+  const [roleAssignments, setRoleAssignments] = useState<Map<string, string>>(new Map())//key-value pair for roles
   const [showRoleSelection, setShowRoleSelection] = useState(false)
 
-  // Redirect if not a club leader or admin
+  //redirecting if not a club leader or admin
   useEffect(() => {
     if (status === 'loading') return
     if (!session || (session.user.role !== 'CLUB_LEADER' && session.user.role !== 'ADMIN')) {
@@ -73,12 +60,10 @@ export default function ClubLeaderMembershipsPage() {
         if (!response.ok) {
           throw new Error('Failed to fetch memberships')
         }
-        
-        const data = await response.json()
-       
-setMemberships(data.pendingMemberships || [])
-setFilteredMemberships(data.pendingMemberships || [])
-setClubs(data.clubs || [])
+        const data = await response.json() //converting server response to json object and storing actual membership data
+        setMemberships(data.pendingMemberships || [])
+        setFilteredMemberships(data.pendingMemberships || [])
+        setClubs(data.clubs || [])
       } catch (error) {
         console.error('Error fetching memberships:', error)
         showNotification('error', 'Failed to load membership applications')
@@ -93,8 +78,8 @@ setClubs(data.clubs || [])
   }, [session])
 
   useEffect(() => {
-    let filtered = memberships
-
+    let filtered = memberships //copy of memberships
+    //filtering based on search terms
     if (searchTerm) {
       filtered = filtered.filter(membership =>
         membership.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -103,17 +88,16 @@ setClubs(data.clubs || [])
         (membership.club?.name && membership.club.name.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     }
-
-    setFilteredMemberships(filtered)
+    setFilteredMemberships(filtered) //filtered memberships
   }, [searchTerm, memberships])
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message })
     setTimeout(() => setNotification(null), 5000)
   }
-
+  //function for selecting applications
   const handleSelectMembership = (membershipId: string) => {
-    const newSelected = new Set(selectedMemberships)
+    const newSelected = new Set(selectedMemberships) //copy of selected memberships
     if (newSelected.has(membershipId)) {
       newSelected.delete(membershipId)
     } else {
@@ -121,7 +105,7 @@ setClubs(data.clubs || [])
     }
     setSelectedMemberships(newSelected)
   }
-
+  //function for selecting all applications
   const handleSelectAll = () => {
     if (!filteredMemberships || filteredMemberships.length === 0) {
       setSelectedMemberships(new Set())
@@ -129,32 +113,32 @@ setClubs(data.clubs || [])
     }
     
     if (selectedMemberships.size === filteredMemberships.length) {
-      setSelectedMemberships(new Set())
+      setSelectedMemberships(new Set()) // Deselect all if already selected
     } else {
-      setSelectedMemberships(new Set(filteredMemberships.map(m => m.id)))
+      setSelectedMemberships(new Set(filteredMemberships.map(m => m.id))) //selecting extracting IDs
     }
   }
-
+  //function to approve or reject all at once
   const handleBulkAction = async (action: 'approve' | 'reject') => {
     if (selectedMemberships.size === 0) {
       showNotification('error', 'Please select at least one membership to process')
       return
     }
-
     setProcessing(true)
+    // assigning roles
     try {
-      // assigning roles
-      const roleAssignmentsArray = Array.from(selectedMemberships).map(membershipId => ({
+      //converting selected memberships set to an array of role assignments
+      const roleAssignmentsArray = Array.from(selectedMemberships).map(membershipId => ({ //object with id and role
         membershipId,
         role: roleAssignments.get(membershipId) || 'General Member'
-      })).filter(assignment => assignment.role !== 'General Member') // Only sending non-default roles
+      })).filter(assignment => assignment.role !== 'General Member') //sending non-default roles
 
       const requestBody: any = {
         membershipIds: Array.from(selectedMemberships),
         action: action
       }
 
-      
+      //sending approved membership ID and role to server
       if (action === 'approve' && roleAssignmentsArray.length > 0) {
         requestBody.roleAssignments = roleAssignmentsArray
       }
@@ -164,7 +148,7 @@ setClubs(data.clubs || [])
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(requestBody), //converting object to JSON string
       })
 
       if (!response.ok) {
@@ -173,15 +157,17 @@ setClubs(data.clubs || [])
       }
 
       const result = await response.json()
-      
+      //removing processed memberships from the state and updating memberships array
       setMemberships(prev => 
         prev.filter(m => !selectedMemberships.has(m.id))
       )
+      //clearing selected memberships and roles
       setSelectedMemberships(new Set())
       setRoleAssignments(new Map()) 
       setShowRoleSelection(false)
       showNotification('success', result.message)
-      // Redirecting to club dashboard after  approval/rejection
+
+      //redirecting to club dashboard after approval/rejection
       router.push('/club-dashboard')
     } catch (error) {
       console.error('Error processing memberships:', error)
@@ -190,10 +176,10 @@ setClubs(data.clubs || [])
       setProcessing(false)
     }
   }
-
+  //function for role assigning
   const handleRoleChange = (membershipId: string, role: string) => {
     setRoleAssignments(prev => {
-      const newMap = new Map(prev)
+      const newMap = new Map(prev) //creating copy of current roles
       if (role === 'General Member') {
         newMap.delete(membershipId) 
       } else {
@@ -208,7 +194,7 @@ setClubs(data.clubs || [])
       showNotification('error', 'Please select at least one membership to approve')
       return
     }
-    setShowRoleSelection(true)
+    setShowRoleSelection(true) //show role assignment popup
   }
 
   const formatDate = (dateString: string) => {
@@ -265,7 +251,7 @@ setClubs(data.clubs || [])
               <Input
                 placeholder="Search by name, email, student ID, or club..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)} //updates search term with changes
                 className="pl-10"
               />
             </div>

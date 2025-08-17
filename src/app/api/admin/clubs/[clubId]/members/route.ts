@@ -3,14 +3,14 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
 
-// GET /api/admin/clubs/[clubId]/members
+//GET /api/admin/clubs/[clubId]/members
 export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Extract clubId from the URL path
+  //extracting clubId from the URL path
   const url = new URL(req.url);
   const segments = url.pathname.split('/');
  
@@ -22,7 +22,7 @@ export async function GET(req: Request) {
 
   console.log('API /admin/clubs/[clubId]/members called with clubId:', clubId);
 
-  // Fetch accepted members of the club
+  //fetching only accepted members of that club
   const memberships = await db.membership.findMany({
     where: {
       clubId,
@@ -30,12 +30,12 @@ export async function GET(req: Request) {
     },
     include: {
       user: {
-        select: { id: true, name: true, email: true },
+        select: { id: true, name: true, email: true }, //selects id,name and email of user
       },
     },
   });
-
-  const members = memberships.map((m) => m.user);
+//mapping only the user data from memberships object array to members array
+  const members = memberships.map((m) => m.user); 
   console.log('Found members:', members);
   return NextResponse.json({ members });
 }

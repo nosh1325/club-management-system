@@ -3,41 +3,41 @@ import { db } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+//fetching club data//GET /api/clubs
 export async function GET(request: NextRequest) {
   try {
-    console.log('GET /api/clubs: Processing request');
+    //search parameters
+    const { searchParams } = new URL(request.url); //extracting query parameters
+    const search = searchParams.get('search') || ''; //club search
+    const statusParam = searchParams.get('status') || 'ACTIVE'; //club data
     
-    // Get search parameters
-    const { searchParams } = new URL(request.url);
-    const search = searchParams.get('search') || '';
-    const statusParam = searchParams.get('status') || 'ACTIVE';
-    
-    // Get session for membership info
-    const session = await getServerSession(authOptions);
+    //session for membership info
+    const session = await getServerSession(authOptions); //awaiting authentication
     console.log('Session:', session ? `User: ${session.user?.email}` : 'No session');
     
     // Get user memberships if authenticated
-    const membershipMap = new Map<string, string>();
-    
+    const membershipMap = new Map<string, string>(); //stores key-value pairs of clubId and membership status
+
     if (session?.user?.email) {
       try {
-        // Find user by email first, then get memberships
+        //finding user by email and selecting id and storing their database record
         const user = await db.user.findUnique({
           where: { email: session.user.email },
           select: { id: true }
         });
         
+        //finding all memberships of the user and storing club id and status
         if (user) {
-          const userMemberships = await db.membership.findMany({
+          const userMemberships = await db.membership.findMany({ //array of all club memberships
             where: { userId: user.id },
             select: { clubId: true, status: true },
           });
 
           userMemberships.forEach((membership) => {
-            membershipMap.set(membership.clubId, membership.status);
+            membershipMap.set(membership.clubId, membership.status); //storing each club's membership status
           });
           
-          console.log(`Found ${userMemberships.length} memberships for user ${session.user.email}`);
+         
         } else {
           console.warn(`User not found in database: ${session.user.email}`);
         }
@@ -46,12 +46,12 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Build where clause
-    const whereClause: Record<string, unknown> = {};
-    if (statusParam) {
+    //where clause for filtering clubs
+    const whereClause: Record<string, unknown> = {}; //initializing an empty object for search filters
+    if (statusParam) { //status filter
       whereClause.status = statusParam;
     }
-    if (search) {
+    if (search) { //search filters using these terms
       whereClause.OR = [
         { name: { contains: search } },
         { description: { contains: search } },
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
       ];
     }
     
-    // Fetch clubs
+    //fetching clubs using search filters and include leader name and email
     const clubs = await db.club.findMany({
       where: whereClause,
       include: {
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
         },
         _count: {
           select: { 
-            memberships: { where: { status: 'ACCEPTED' } },
+            memberships: { where: { status: 'ACCEPTED' } }, //counting accepted memberships
             events: true
           }
         }
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
       orderBy: { name: 'asc' }
     });
 
-    // Transform clubs data
+    //processing clubs data and building a clubsWithMembership array
     const clubsWithMembership = clubs.map((club) => {
       let activities: string[] = [];
       try {
@@ -110,7 +110,6 @@ export async function GET(request: NextRequest) {
       };
     });
 
-    console.log(`Returning ${clubsWithMembership.length} clubs`);
     return NextResponse.json({ 
       clubs: clubsWithMembership,
       count: clubsWithMembership.length
