@@ -173,6 +173,35 @@ function AdminDashboard({ dashboardData }: { dashboardData: DashboardData }) {
               </div>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Event Management</CardTitle>
+              <CardDescription>Oversee all club events and activities</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-4">
+                <Link href="/admin/events">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    All Events
+                  </Button>
+                </Link>
+                <Link href="/admin/event-approvals">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Clock className="h-4 w-4 mr-2" />
+                    Event Approvals
+                  </Button>
+                </Link>
+                <Link href="/admin/budget">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Building2 className="h-4 w-4 mr-2" />
+                    Budget Management
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         </div>
 
@@ -187,7 +216,7 @@ function AdminDashboard({ dashboardData }: { dashboardData: DashboardData }) {
           </div>
         </div>
       </div>
-    </div>
+   
   )
 }
 
@@ -288,7 +317,12 @@ function ClubLeaderDashboard({ dashboardData }: { dashboardData: DashboardData }
                     Manage Members
                   </Button>
                 </Link>
-                
+                <Link href="/events/create">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create New Event
+                  </Button>
+                </Link>
                 <Link href="/club-leader/edit-club">
                     <Button variant="outline" className="w-full justify-start">
                       <Edit className="h-4 w-4 mr-2" />

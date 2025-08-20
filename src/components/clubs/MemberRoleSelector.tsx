@@ -24,7 +24,7 @@ export default function MemberRoleSelector({
 
     setIsUpdating(true);
     try {
-      const response = await fetch(`/api/memberships/${membershipId}/role`, {
+      const response = await fetch(`/api/memberships/${membershipId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +35,8 @@ export default function MemberRoleSelector({
       if (response.ok) {
         onRoleUpdate(newRole);
       } else {
-        alert('Failed to update role');
+        const errorData = await response.json();
+        alert('Failed to update role: ' + (errorData.error || 'Unknown error'));
       }
     } catch (error) {
       console.error('Error updating role:', error);
