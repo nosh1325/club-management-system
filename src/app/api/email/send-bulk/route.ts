@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // If specific member IDs are provided, filter by them
+    // Filter by ID
     if (memberIds && memberIds.length > 0) {
       whereClause.userId = {
         in: memberIds

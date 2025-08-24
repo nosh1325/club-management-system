@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    //return validated member data 
+    //returning validated member data 
     return NextResponse.json({
       memberData: {
         email: membership.user.email,

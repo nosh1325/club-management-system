@@ -115,7 +115,7 @@ export default function EmailMembersPage() {
     }
   }, [session])
 
-  // Filter members based on search term
+  // Filter members based on search keywords
   useEffect(() => {
     let filtered = members
     if (searchTerm) {

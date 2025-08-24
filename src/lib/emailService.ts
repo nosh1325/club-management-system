@@ -132,7 +132,7 @@ class EmailService {
       
       if (error?.status === 400 || error?.status === 422) {
         return {
-          success: true, // Mark as success but skip to handle errors with false email address
+          success: true, // Mark as success but skip to handle errors with false  address
           email: memberEmail,
           error: 'Skipped email with delivery issues'
         }

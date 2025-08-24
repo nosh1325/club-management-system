@@ -44,7 +44,7 @@ export default function EmailForm({ onEmailSent, memberInfo }: EmailFormProps) {
     setSending(true)
 
     try {
-      
+       //email form validation
       const validateResponse = await fetch('/api/email/send-to-member', {
         method: 'POST',
         headers: {

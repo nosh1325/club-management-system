@@ -246,7 +246,7 @@ export default function BulkEmailModal({ isOpen, onClose, clubs, onEmailSent }: 
                   {sending ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Sending...
+                      Sending....
                     </>
                   ) : (
                     <>
