@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
-import { Users, Search, Check, X, Clock, Mail, GraduationCap,Building2,Calendar,UserCog} from 'lucide-react'
+import { Users, Search, Check, X, Clock, Mail, GraduationCap,Building2,Calendar,UserCog, Send} from 'lucide-react'
+import BulkEmailModal from '@/components/email/BulkEmailModal'
 
 interface PendingMembership {
   id: string
@@ -32,6 +33,7 @@ export default function ClubLeaderMembershipsPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [memberships, setMemberships] = useState<PendingMembership[]>([]) //pending memberships array
+  const [approvedMemberships, setApprovedMemberships] = useState<any[]>([]) //approved memberships array
   const [filteredMemberships, setFilteredMemberships] = useState<PendingMembership[]>([]) //filtered results
   const [clubs, setClubs] = useState<any[]>([]) //clubs managed by leader
   const [searchTerm, setSearchTerm] = useState('')
@@ -41,6 +43,7 @@ export default function ClubLeaderMembershipsPage() {
   const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null)
   const [roleAssignments, setRoleAssignments] = useState<Map<string, string>>(new Map())//key-value pair for roles
   const [showRoleSelection, setShowRoleSelection] = useState(false)
+  const [showBulkEmailModal, setShowBulkEmailModal] = useState(false)
 
   //redirecting if not a club leader or admin
   useEffect(() => {
@@ -63,6 +66,7 @@ export default function ClubLeaderMembershipsPage() {
         const data = await response.json() //converting server response to json object and storing actual membership data
         setMemberships(data.pendingMemberships || [])
         setFilteredMemberships(data.pendingMemberships || [])
+        setApprovedMemberships(data.approvedMemberships || [])
         setClubs(data.clubs || [])
       } catch (error) {
         console.error('Error fetching memberships:', error)
@@ -282,6 +286,15 @@ export default function ClubLeaderMembershipsPage() {
               >
                 <X className="h-4 w-4 mr-2" />
                 Reject ({selectedMemberships.size})
+              </Button>
+              
+              <Button
+                onClick={() => setShowBulkEmailModal(true)}
+                disabled={approvedMemberships.length === 0}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Email Members
               </Button>
             </div>
           </div>
@@ -516,6 +529,21 @@ export default function ClubLeaderMembershipsPage() {
             )}
           </CardContent>
         </Card>
+
+        {/* Bulk Email Modal */}
+        <BulkEmailModal
+          isOpen={showBulkEmailModal}
+          onClose={() => setShowBulkEmailModal(false)}
+          clubs={clubs.map(club => ({
+            id: club.id,
+            name: club.name,
+            memberCount: approvedMemberships.filter(m => m.club.id === club.id).length
+          }))}
+          onEmailSent={(result) => {
+            showNotification('success', `Bulk email completed! ${result.summary.sent} sent, ${result.summary.skipped} skipped, ${result.summary.failed} failed.`)
+            setShowBulkEmailModal(false)
+          }}
+        />
       </div>
     </div>
   )

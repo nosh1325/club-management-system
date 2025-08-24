@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Building2, Calendar, Users, Clock, MapPin, Plus, Edit } from 'lucide-react'
+import { Building2, Calendar, Users, Clock, MapPin, Plus, Edit,Mail } from 'lucide-react'
 import Link from 'next/link'
 
 interface DashboardData {
@@ -315,6 +315,12 @@ function ClubLeaderDashboard({ dashboardData }: { dashboardData: DashboardData }
                   <Button variant="outline" className="w-full justify-start">
                     <Users className="h-4 w-4 mr-2" />
                     Manage Members
+                  </Button>
+                </Link>
+                <Link href="/club-leader/email-members">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Send Emails
                   </Button>
                 </Link>
                 <Link href="/events/create">
