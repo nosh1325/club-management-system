@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -26,23 +28,48 @@ interface Event {
 }
 
 export default function EventsPage() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const [events, setEvents] = useState<Event[]>([])
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
   const [loading, setLoading] = useState(true)
 
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === 'loading') return
+    if (!session) {
+      router.push('/auth/signin')
+      return
+    }
+  }, [session, status, router])
+
   useEffect(() => {
     const fetchEvents = async () => {
+      // Don't fetch if not authenticated
+      if (status === 'loading' || !session) return
+      
       try {
         setLoading(true)
         const response = await fetch(`/api/events?search=${searchTerm}&time=upcoming`)
+        
+        console.log('Response status:', response.status)
+        console.log('Response headers:', response.headers.get('content-type'))
+        
         if (response.ok) {
-          const data = await response.json()
-          setEvents(data.events)
-          setFilteredEvents(data.events)
+          const contentType = response.headers.get('content-type')
+          if (contentType && contentType.includes('application/json')) {
+            const data = await response.json()
+            setEvents(data.events)
+            setFilteredEvents(data.events)
+          } else {
+            const text = await response.text()
+            console.error('Expected JSON but got:', text.substring(0, 200))
+          }
         } else {
-          console.error('Failed to fetch events')
+          const text = await response.text()
+          console.error('Failed to fetch events. Status:', response.status, 'Response:', text.substring(0, 200))
         }
       } catch (error) {
         console.error('Error fetching events:', error)
@@ -51,7 +78,7 @@ export default function EventsPage() {
       }
     }
     fetchEvents()
-  }, [searchTerm])
+  }, [searchTerm, session, status])
 
   useEffect(() => {
     let filtered = events
@@ -124,6 +151,30 @@ export default function EventsPage() {
       hour: '2-digit',
       minute: '2-digit'
     })
+  }
+
+  if (status === 'loading') {
+    return (
+      <div className="bracu-bg min-h-screen flex items-center justify-center relative">
+        <div className="text-center relative z-10">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-white">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!session) {
+    return (
+      <div className="bracu-bg min-h-screen flex items-center justify-center relative">
+        <div className="text-center relative z-10">
+          <p className="text-white mb-4">Please sign in to view events</p>
+          <Button onClick={() => router.push('/auth/signin')}>
+            Sign In
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   if (loading) {

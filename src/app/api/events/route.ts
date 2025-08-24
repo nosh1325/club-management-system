@@ -4,10 +4,13 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
+  console.log('🎉 Events API called at:', new Date().toISOString())
   try {
     const session = await getServerSession(authOptions)
+    console.log('Session check:', !!session?.user?.email)
     
     if (!session?.user?.email) {
+      console.log('❌ No session found')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -31,7 +34,10 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    console.log('User lookup result:', !!user)
+
     if (!user) {
+      console.log('❌ User not found in database')
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
@@ -142,9 +148,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ events: eventsWithRsvp })
   } catch (error) {
-    console.error('Events API error:', error)
+    console.error('❌ Events API error:', error)
+    // Make sure we return JSON even on error
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }

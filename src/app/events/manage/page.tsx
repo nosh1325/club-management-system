@@ -235,19 +235,19 @@ const formatTime = (dateString: string) => {
                     </div>
                   </CardHeader>
                   <CardContent className="flex-1 flex flex-col">
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                    <p className="text-sm text-black-600 mb-4 line-clamp-3">
                       {event.description}
                     </p>
                     <div className="space-y-2 mb-4 text-sm">
-                      <div className="flex items-center gap-2 text-gray-600">
+                      <div className="flex items-center gap-2 text-black-600">
                         <Calendar className="h-4 w-4" />
                         <span>{formatDate(event.startDate)}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-gray-600">
+                      <div className="flex items-center gap-2 text-black-600">
                         <Clock className="h-4 w-4" />
                         <span>{formatTime(event.startDate)} - {formatTime(event.endDate)}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-gray-600">
+                      <div className="flex items-center gap-2 text-black-600">
                         <MapPin className="h-4 w-4" />
                         <span>{event.venue}</span>
                       </div>
@@ -255,7 +255,7 @@ const formatTime = (dateString: string) => {
                     </div>
                     {event.requirements && (
                       <div className="mb-4">
-                        <p className="text-xs font-medium text-gray-700 mb-1">Requirements:</p>
+                        <p className="text-xs font-medium text-black-700 mb-1">Requirements:</p>
                         <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
                           {event.requirements}
                         </p>
