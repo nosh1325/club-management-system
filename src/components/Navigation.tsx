@@ -43,7 +43,8 @@ export default function Navigation() {
     { href: '/admin', label: 'Admin Dashboard', icon: Shield },
     { href: '/admin/clubs', label: 'Clubs', icon: Building2 },
     { href: '/admin/events', label: 'Events', icon: Calendar },
-    //{ href: '/admin/budget', label: 'Budget Requests', icon: Settings },
+    { href: '/admin/memberships', label: 'Memberships', icon: Users },
+    { href: '/admin/budget', label: 'Budget Requests', icon: Settings },
     { href: '/profile', label: 'Profile', icon: User },
   ]
 
