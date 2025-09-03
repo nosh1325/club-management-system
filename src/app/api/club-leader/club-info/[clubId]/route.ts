@@ -6,7 +6,7 @@ import { db } from '@/lib/db'
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { clubId: string } }
+  context: { params: Promise<{ clubId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -26,7 +26,7 @@ export async function PUT(
       )
     }
 
-    const clubId = params.clubId
+    const { clubId } = await context.params
 
   
     const user = await db.user.findUnique({

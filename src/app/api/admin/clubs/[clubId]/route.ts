@@ -7,7 +7,7 @@ import { db } from '@/lib/db'
 // PUT - Update club details
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { clubId: string } }
+  context: { params: Promise<{ clubId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -19,7 +19,7 @@ export async function PUT(
       )
     }
 
-    const { clubId } = params
+    const { clubId } = await context.params
     const body = await request.json()
     const { name, description, department, status, foundedYear, vision, mission } = body
 
