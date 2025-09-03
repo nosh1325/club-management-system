@@ -6,7 +6,7 @@ import { db } from '@/lib/db'
 // PATCH - Update membership role
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -30,7 +30,7 @@ export async function PATCH(
       }, { status: 403 })
     }
 
-    const membershipId = params.id
+    const { id: membershipId } = await context.params
     const { role } = await request.json()
 
     // Validate role
