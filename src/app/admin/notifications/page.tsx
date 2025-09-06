@@ -13,15 +13,12 @@ import {
   Plus, 
   Send, 
   Users, 
-  Building2, 
   Search,
   Calendar,
-  Eye,
-  AlertCircle,
   Mail,
   X
 } from 'lucide-react'
-import Link from 'next/link'
+
 import AdminEmailForm from '@/components/email/AdminEmailForm'
 
 interface Notification {
@@ -92,7 +89,7 @@ export default function AdminNotificationsPage() {
         const [notificationsRes, clubsRes, usersRes] = await Promise.all([
           fetch('/api/admin/notifications'),
           fetch('/api/admin/notifications/clubs'),
-          fetch('/api/all-users') // We'll create this API
+          fetch('/api/all-users') 
         ])
 
         if (notificationsRes.ok) {
