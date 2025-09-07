@@ -172,11 +172,11 @@ export default function DiscoverClubsPage() {
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-100 drop-shadow-2xl mb-4">
              Discover Clubs 
           </h1>
-          <p className="text-white/90 mt-2 text-lg sm:text-xl drop-shadow-lg max-w-2xl mx-auto">
+          <p className="text-gray-800 mt-2 text-lg sm:text-xl drop-shadow-lg max-w-2xl mx-auto">
             Explore and join BRAC University clubs - Find your passion, amplify your voice!
           </p>
           <motion.div 
-            className="mt-4 text-white/90 text-sm font-medium"
+            className="mt-4 text-gray-700 text-sm font-medium"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.6 }}
@@ -188,22 +188,22 @@ export default function DiscoverClubsPage() {
       {loading && (
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent mx-auto mb-4"></div>
-          <p className="mt-2 text-white/90 text-lg">🎪 Loading the amazing clubs...</p>
+          <p className="mt-2 text-gray-700 text-lg">🎪 Loading the amazing clubs...</p>
         </div>
       )}
       
       {error && (
-        <div className="text-center text-red-300 py-6 bg-white/10 backdrop-blur-md rounded-lg mb-8 p-6 mx-4 sm:mx-0 border border-white/20">
-          <p className="font-medium text-lg text-white/90">⚠️ Error loading clubs</p>
-          <p className="text-sm mt-2 text-white/80">{error}</p>
+        <div className="text-center text-red-800 py-6 bg-white/80 backdrop-blur-sm rounded-lg mb-8 p-6 mx-4 sm:mx-0 border border-white/60">
+          <p className="font-medium text-lg text-gray-900">⚠️ Error loading clubs</p>
+          <p className="text-sm mt-2 text-gray-700">{error}</p>
         </div>
       )}
       
       {!loading && clubs.length === 0 && (
-        <div className="text-center py-12 bg-white/10 backdrop-blur-md rounded-lg shadow-md border border-white/20">
-          <Building2 className="h-16 w-16 text-white/90 mx-auto mb-6" />
-          <p className="text-white/90 text-lg">🎭 No clubs found. The stage is waiting to be set!</p>
-          <p className="text-white/80 text-sm mt-2">The database might need to be seeded with club data.</p>
+        <div className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-lg shadow-md border border-white/60">
+          <Building2 className="h-16 w-16 text-gray-900 mx-auto mb-6" />
+          <p className="text-gray-900 text-lg">🎭 No clubs found. The stage is waiting to be set!</p>
+          <p className="text-gray-700 text-sm mt-2">The database might need to be seeded with club data.</p>
         </div>
       )}
       
@@ -229,7 +229,7 @@ export default function DiscoverClubsPage() {
                 transition: { duration: 0.2 }
               }}
             >
-              <Card className="h-full flex flex-col hover:shadow-lg transition-all duration-300 bg-white/10 backdrop-blur-md text-white/90 rounded-lg shadow-md border border-white/20 hover:border-white/40 relative overflow-hidden group transform hover:scale-105 hover:shadow-xl hover:shadow-white/20">
+              <Card className="h-full flex flex-col hover:shadow-lg transition-all duration-300 bg-white/80 backdrop-blur-sm rounded-lg shadow-md border border-white/60 hover:border-white/80 relative overflow-hidden group transform hover:scale-105 hover:shadow-xl hover:shadow-black/10">
                 {club.logoUrl && (
                   <div className="aspect-video w-full overflow-hidden rounded-t-lg bg-gradient-to-br from-white/10 to-white/5 relative">
                     <img
@@ -245,24 +245,24 @@ export default function DiscoverClubsPage() {
                   </div>
                 )}
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-base sm:text-lg leading-tight text-slate-100 group-hover:text-white transition-colors">
+                  <CardTitle className="text-base sm:text-lg leading-tight text-gray-900 group-hover:text-gray-800 transition-colors">
                     {club.name}
                   </CardTitle>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {club.category && (
-                      <Badge variant="outline" className="text-xs bg-white/20 text-white/90 border-white/30 backdrop-blur-sm">
+                      <Badge variant="outline" className="text-xs bg-blue-100 text-blue-800 border-blue-200 backdrop-blur-sm">
                         🎯 {club.category}
                       </Badge>
                     )}
                     {club.department && (
-                      <Badge variant="secondary" className="text-xs bg-white/15 text-white/90 border-white/25">
+                      <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-800 border-gray-200">
                         🏛️ {club.department}
                       </Badge>
                     )}
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow flex flex-col justify-between pt-0">
-                  <p className="text-white/80 text-sm leading-relaxed line-clamp-3 mb-4">
+                  <p className="text-gray-700 text-sm leading-relaxed line-clamp-3 mb-4">
                     {club.description}
                   </p>
                   <motion.div
@@ -275,7 +275,7 @@ export default function DiscoverClubsPage() {
                         status !== "authenticated" ||
                         processingClubIds.has(club.id)
                       }
-                      className="w-full text-sm bg-white/20 hover:bg-white/30 text-white font-semibold shadow-lg hover:shadow-xl backdrop-blur-sm border border-white/30 hover:border-white/50 transition-all duration-300"
+                      className="w-full text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg hover:shadow-xl border border-blue-500 hover:border-blue-600 transition-all duration-300"
                       size="sm"
                     >
                       {status !== "authenticated"

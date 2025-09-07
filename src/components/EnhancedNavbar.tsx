@@ -33,6 +33,7 @@ export default function EnhancedNavbar() {
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/club-leader/memberships', label: 'Applications', icon: Clock },
     { href: '/clubs', label: 'Discover Clubs', icon: Building2 },
+    { href: '/budget-requests', label: 'Budget', icon: Settings },
     { href: '/profile', label: 'Profile', icon: User },
   ]
 

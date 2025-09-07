@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased min-h-screen`}>
         <Providers>
           <Navigation />
-          <main className="pb-4">
+          <main className="pt-4 pb-4">
             {children}
           </main>
         </Providers>

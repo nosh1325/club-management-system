@@ -163,13 +163,13 @@ export default function NotificationsPage() {
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto w-full">
           {/* Frosted glass container */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20 transition-all duration-300 hover:bg-white/15">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60 transition-all duration-300">
             
             {/* Header */}
             <div className="mb-8 flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-white drop-shadow-lg">Notifications</h1>
-                <p className="mt-2 text-gray-200 drop-shadow">
+                <h1 className="text-3xl font-bold text-gray-900 drop-shadow-lg">Notifications</h1>
+                <p className="mt-2 text-gray-700 drop-shadow">
                   Stay updated with announcements and important information
                 </p>
               </div>
@@ -178,13 +178,13 @@ export default function NotificationsPage() {
                   <Button 
                     onClick={markAllAsRead}
                     variant="outline"
-                    className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <CheckCircle className="h-4 w-4 mr-2" />
                     Mark All Read
                   </Button>
                 )}
-                <Badge variant="outline" className="bg-white/20 border-white/30 text-white">
+                <Badge variant="outline" className="bg-blue-100 border-blue-300 text-blue-800">
                   {unreadCount} unread
                 </Badge>
               </div>
@@ -202,7 +202,7 @@ export default function NotificationsPage() {
               <Button
                 variant={filter === 'unread' ? 'default' : 'outline'}
                 onClick={() => setFilter('unread')}
-                className={filter === 'unread' ? 'bg-blue-600 text-white' : 'bg-white/20 border-white/30 text-white hover:bg-white/30'}
+                className={filter === 'unread' ? 'bg-blue-600 text-white' : 'bg-white/90 border-gray-300 text-gray-800 hover:bg-white/100'}
               >
                 Unread ({unreadCount})
               </Button>

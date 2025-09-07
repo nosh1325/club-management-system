@@ -223,27 +223,42 @@ export default function ClubLeaderMembershipsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Membership Applications</h1>
-          <p className="mt-2 text-gray-600">
-            Review and approve student applications to join your clubs
-          </p>
-          {clubs.length > 1 && (
-            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-blue-800 font-medium">Managing {clubs.length} clubs:</p>
-              <div className="flex gap-2 mt-2 flex-wrap">
-                {clubs.map((club) => (
-                  <span key={club.id} className="inline-block px-3 py-1 bg-blue-200 text-blue-800 rounded-full text-sm">
-                    {club.name}
-                  </span>
-                ))}
-              </div>
+    <div 
+      className="min-h-screen relative"
+      style={{
+        backgroundImage: `url('/images/bracu-campus.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50"></div>
+      
+      {/* Content container */}
+      <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* White frosted glass container */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">Membership Applications</h1>
+              <p className="mt-2 text-gray-700">
+                Review and approve student applications to join your clubs
+              </p>
+              {clubs.length > 1 && (
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-blue-800 font-medium">Managing {clubs.length} clubs:</p>
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    {clubs.map((club) => (
+                      <span key={club.id} className="inline-block px-3 py-1 bg-blue-200 text-blue-800 rounded-full text-sm">
+                        {club.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
         
 
@@ -544,6 +559,8 @@ export default function ClubLeaderMembershipsPage() {
             setShowBulkEmailModal(false)
           }}
         />
+          </div>
+        </div>
       </div>
     </div>
   )

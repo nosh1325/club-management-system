@@ -116,7 +116,7 @@ export default function AddClubPage() {
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto w-full">
           {/* Frosted glass container */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
             {/* Header */}
             <div className="mb-8 flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -124,14 +124,14 @@ export default function AddClubPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => router.push('/admin/clubs')}
-                  className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                  className="bg-white/60 border-white/70 text-gray-700 hover:bg-white/70"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Clubs
                 </Button>
                 <div>
-                  <h1 className="text-3xl font-bold text-white drop-shadow-lg">Add New Club</h1>
-                  <p className="mt-2 text-gray-200 drop-shadow">
+                  <h1 className="text-3xl font-bold text-gray-900 drop-shadow-lg">Add New Club</h1>
+                  <p className="mt-2 text-gray-700 drop-shadow">
                     Create a new club in the system
                   </p>
                 </div>

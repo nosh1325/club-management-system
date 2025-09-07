@@ -23,18 +23,30 @@ export default function HomePage() {
     }
 
     return (
-      <div className="bracu-bg min-h-screen flex items-center justify-center">
+      <div 
+        className="min-h-screen relative flex items-center justify-center"
+        style={{
+          backgroundImage: `url('/images/bracu-campus.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/50"></div>
+        
+        {/* Content container */}
         <div className="container mx-auto px-4 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-md mx-auto"
+            className="max-w-md mx-auto bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60"
           >
-            <h1 className="text-5xl font-bold mb-4 text-center text-white drop-shadow-lg">
+            <h1 className="text-5xl font-bold mb-4 text-center text-gray-900 drop-shadow-lg">
               Welcome back, {session.user.name || 'User'}!
             </h1>
-            <p className="py-6 text-lg text-gray-200 text-center drop-shadow">
+            <p className="py-6 text-lg text-gray-700 text-center drop-shadow">
               Ready to explore Club Connect and manage your university clubs?
             </p>
             <div className="flex justify-center">
@@ -52,16 +64,28 @@ export default function HomePage() {
   }
 
   return (
-    <div className="bracu-bg min-h-screen flex items-center justify-center">
+    <div 
+      className="min-h-screen relative flex items-center justify-center"
+      style={{
+        backgroundImage: `url('/images/bracu-campus.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50"></div>
+      
+      {/* Content container */}
       <div className="container mx-auto px-4 text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto"
+          className="max-w-4xl mx-auto bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60"
         >
-          <h1 className="text-5xl font-bold mb-6 text-center text-white drop-shadow-lg">Welcome to Club Connect</h1>
-          <p className="py-6 text-lg text-gray-200 max-w-2xl mx-auto text-center drop-shadow">
+          <h1 className="text-5xl font-bold mb-6 text-center text-gray-900 drop-shadow-lg">Welcome to Club Connect</h1>
+          <p className="py-6 text-lg text-gray-700 max-w-2xl mx-auto text-center drop-shadow">
             The comprehensive club management system for BRAC University. 
             Join clubs, manage events, and build your university community with ease!
           </p>

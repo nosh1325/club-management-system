@@ -201,13 +201,13 @@ export default function AdminNotificationsPage() {
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
           {/* Frosted glass container */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20 transition-all duration-300 hover:bg-white/15">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
             
             {/* Header */}
             <div className="mb-8 flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-white drop-shadow-lg">Notification Management</h1>
-                <p className="mt-2 text-gray-200 drop-shadow">
+                <h1 className="text-3xl font-bold text-gray-900 drop-shadow-lg">Notification Management</h1>
+                <p className="mt-2 text-gray-700 drop-shadow">
                   Send announcements and notifications to users
                 </p>
               </div>
