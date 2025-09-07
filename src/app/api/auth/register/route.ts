@@ -34,6 +34,12 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+      if (!department || !department.trim()) {
+        return NextResponse.json(
+          { error: 'Department is required' },
+          { status: 400 }
+        )
+      }
     // Check if user already exists
     const existingUser = await db.user.findUnique({
       where: { email }
