@@ -6,7 +6,7 @@ import { db } from '@/lib/db'
 // DELETE - Delete a user and all their data
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: Promise<{ userId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -18,6 +18,7 @@ export async function DELETE(
       )
     }
 
+    const params = await context.params
     const { userId } = params
 
     if (!userId) {
