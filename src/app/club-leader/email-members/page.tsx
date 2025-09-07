@@ -151,150 +151,167 @@ export default function EmailMembersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Email Club Members</h1>
-          <p className="mt-2 text-gray-600">
-            Send emails to individual members or broadcast to all club members
-          </p>
-        </div>
+    <div 
+      className="min-h-screen relative"
+      style={{
+        backgroundImage: `url('/images/bracu-campus.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50"></div>
+      
+      {/* Content container */}
+      <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* White frosted glass container */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">Email Club Members</h1>
+              <p className="mt-2 text-gray-700">
+                Send emails to individual members or broadcast to all club members
+              </p>
+            </div>
 
-        {/* Notification */}
-        {notification && (
-          <div className={`mb-6 p-4 rounded-lg ${
-            notification.type === 'success' 
-              ? 'bg-green-50 text-green-800 border border-green-200' 
-              : 'bg-red-50 text-red-800 border border-red-200'
-          }`}>
-            {notification.message}
-          </div>
-        )}
-
-        {/* Quick Actions */}
-        <div className="mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Quick Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  onClick={() => setShowBulkEmailModal(true)}
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Bulk Email
-                </Button>
-                <div className="text-sm text-gray-600 flex items-center">
-                  Send emails to all members of your clubs or specific clubs
-                </div>
+            {/* Notification */}
+            {notification && (
+              <div className={`mb-6 p-4 rounded-lg ${
+                notification.type === 'success' 
+                  ? 'bg-green-50 text-green-800 border border-green-200' 
+                  : 'bg-red-50 text-red-800 border border-red-200'
+              }`}>
+                {notification.message}
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Members List */}
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Club Members ({filteredMembers.length})
-                </CardTitle>
-                <CardDescription>
-                  Select a member to send an individual email
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {/* Search */}
-                <div className="mb-4">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      placeholder="Search members by name, email, or club..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-
-                {/* Members List */}
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {filteredMembers.length === 0 ? (
-                    <div className="text-center py-8">
-                      <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">
-                        {members.length === 0 ? 'No approved members' : 'No members match your search'}
-                      </h3>
-                      <p className="text-gray-600">
-                        {members.length === 0 
-                          ? 'No approved members found in your clubs.' 
-                          : 'Try adjusting your search terms.'
-                        }
-                      </p>
+            {/* Quick Actions */}
+            <div className="mb-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5" />
+                    Quick Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Button
+                      onClick={() => setShowBulkEmailModal(true)}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      <Send className="h-4 w-4 mr-2" />
+                      Send Bulk Email
+                    </Button>
+                    <div className="text-sm text-gray-600 flex items-center">
+                      Send emails to all members of your clubs or specific clubs
                     </div>
-                  ) : (
-                    filteredMembers.map((member) => (
-                      <div
-                        key={member.id}
-                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                          selectedMember?.id === member.id
-                            ? 'bg-blue-50 border-blue-200'
-                            : 'bg-white hover:bg-gray-50 border-gray-200'
-                        }`}
-                        onClick={() => setSelectedMember(member)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h4 className="font-medium">{member.name || 'Unknown Member'}</h4>
-                            <p className="text-sm text-gray-600">{member.email || 'No email'}</p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <Badge variant="outline" className="text-xs">
-                                {member.club?.name || 'Unknown Club'}
-                              </Badge>
-                              <Badge variant="secondary" className="text-xs">
-                                {member.role || 'Member'}
-                              </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Members List */}
+              <div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      Club Members ({filteredMembers.length})
+                    </CardTitle>
+                    <CardDescription>
+                      Select a member to send an individual email
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Search */}
+                    <div className="mb-4">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <Input
+                          placeholder="Search members by name, email, or club..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Members List */}
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {filteredMembers.length === 0 ? (
+                        <div className="text-center py-8">
+                          <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                          <h3 className="text-lg font-medium text-gray-900 mb-2">
+                            {members.length === 0 ? 'No approved members' : 'No members match your search'}
+                          </h3>
+                          <p className="text-gray-600">
+                            {members.length === 0 
+                              ? 'No approved members found in your clubs.' 
+                              : 'Try adjusting your search terms.'
+                            }
+                          </p>
+                        </div>
+                      ) : (
+                        filteredMembers.map((member) => (
+                          <div
+                            key={member.id}
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                              selectedMember?.id === member.id
+                                ? 'bg-blue-50 border-blue-200'
+                                : 'bg-white hover:bg-gray-50 border-gray-200'
+                            }`}
+                            onClick={() => setSelectedMember(member)}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-medium text-gray-900">{member.name || 'Unknown Member'}</h4>
+                                <p className="text-sm text-gray-600">{member.email || 'No email'}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <Badge variant="outline" className="text-xs">
+                                    {member.club?.name || 'Unknown Club'}
+                                  </Badge>
+                                  <Badge variant="secondary" className="text-xs">
+                                    {member.role || 'Member'}
+                                  </Badge>
+                                </div>
+                              </div>
+                              <Mail className="h-4 w-4 text-gray-400" />
                             </div>
                           </div>
-                          <Mail className="h-4 w-4 text-gray-400" />
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                        ))
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
 
-          {/* Email Form */}
-          <div>
-            <EmailForm
-              memberInfo={selectedMember ? {
-                id: selectedMember.id,
-                name: selectedMember.name || 'Unknown Member',
-                email: selectedMember.email || '',
-                clubName: selectedMember.club?.name || 'Unknown Club'
-              } : undefined}
-              onEmailSent={handleEmailSent}
+              {/* Email Form */}
+              <div>
+                <EmailForm
+                  memberInfo={selectedMember ? {
+                    id: selectedMember.id,
+                    name: selectedMember.name || 'Unknown Member',
+                    email: selectedMember.email || '',
+                    clubName: selectedMember.club?.name || 'Unknown Club'
+                  } : undefined}
+                  onEmailSent={handleEmailSent}
+                />
+              </div>
+            </div>
+
+            {/* Bulk Email Modal */}
+            <BulkEmailModal
+              isOpen={showBulkEmailModal}
+              onClose={() => setShowBulkEmailModal(false)}
+              clubs={clubs}
+              onEmailSent={handleBulkEmailSent}
             />
           </div>
         </div>
-
-        {/* Bulk Email Modal */}
-        <BulkEmailModal
-          isOpen={showBulkEmailModal}
-          onClose={() => setShowBulkEmailModal(false)}
-          clubs={clubs}
-          onEmailSent={handleBulkEmailSent}
-        />
       </div>
     </div>
   )

@@ -189,8 +189,8 @@ export default function AdminBudgetRequestsPage() {
         ></div>
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="text-center relative z-10">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4 text-white text-lg">Loading budget requests...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-700 mx-auto"></div>
+          <p className="mt-4 text-gray-700 text-lg">Loading budget requests...</p>
         </div>
       </div>
     )
@@ -206,18 +206,18 @@ export default function AdminBudgetRequestsPage() {
         backgroundAttachment: 'fixed'
       }}
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/50"></div>
+      {/* Very light overlay for maximum contrast */}
+      <div className="absolute inset-0 bg-black/10"></div>
       
       {/* Content container */}
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
-          {/* Frosted glass container */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20">
+          {/* White frosted glass container */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
             {/* Header */}
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-white drop-shadow-lg">Budget Request Management</h1>
-              <p className="mt-2 text-gray-200 drop-shadow">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Budget Request Management</h1>
+              <p className="mt-2 text-sm sm:text-base text-gray-700">
                 Review and approve club budget requests
               </p>
             </div>

@@ -37,9 +37,19 @@ export default async function StatusPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
+    <div 
+      className="min-h-screen relative"
+      style={{
+        backgroundImage: `url('/images/background.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      <div className="absolute inset-0 bg-black/10"></div>
+      <div className="relative z-10 py-8">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-sm p-8 mb-8 border border-white/60">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             🎯 Club Connect - System Status
           </h1>
@@ -211,6 +221,7 @@ export default async function StatusPage() {
                 ⏳ Review Applications ({pendingMemberships})
               </Link>
             )}
+          </div>
           </div>
         </div>
       </div>

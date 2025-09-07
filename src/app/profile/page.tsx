@@ -214,7 +214,7 @@ export default function ProfilePage() {
   if (status === 'loading') {
     return (
       <div className="bracu-bg flex justify-center items-center h-screen relative">
-        <div className="text-white relative z-10">Loading...</div>
+        <div className="text-gray-700 relative z-10">Loading...</div>
       </div>
     )
   }
@@ -222,7 +222,7 @@ export default function ProfilePage() {
   if (status === 'unauthenticated') {
     return (
       <div className="bracu-bg flex justify-center items-center h-screen relative">
-        <div className="text-white relative z-10">Access Denied. Please sign in.</div>
+        <div className="text-gray-700 relative z-10">Access Denied. Please sign in.</div>
       </div>
     )
   }
@@ -230,7 +230,7 @@ export default function ProfilePage() {
   if (!profile) {
     return (
       <div className="bracu-bg flex justify-center items-center h-screen relative">
-        <div className="text-white relative z-10">Loading profile...</div>
+        <div className="text-gray-700 relative z-10">Loading profile...</div>
       </div>
     )
   }
@@ -252,10 +252,10 @@ export default function ProfilePage() {
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto max-w-4xl w-full">
           {/* Frosted glass container */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20 transition-all duration-300 hover:bg-white/15">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
             <div className="text-center mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">User Profile</h1>
-              <p className="text-gray-200 mt-2 drop-shadow">Your personal and account details</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 drop-shadow-lg">User Profile</h1>
+              <p className="text-gray-700 mt-2 drop-shadow">Your personal and account details</p>
             </div>
             
             <Card className="max-w-2xl mx-auto bg-white/95 backdrop-blur border-0 shadow-lg">

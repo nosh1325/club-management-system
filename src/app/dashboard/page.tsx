@@ -77,7 +77,7 @@ export default function Dashboard() {
     return (
       <div className="bracu-bg min-h-screen flex items-center justify-center">
         <div className="text-center relative z-10">
-          <p className="text-gray-200">Please sign in to access your dashboard.</p>
+          <p className="text-gray-700">Please sign in to access your dashboard.</p>
           <Link href="/auth/signin" className="text-blue-300 hover:text-blue-200 mt-2 inline-block">
             Sign In
           </Link>
@@ -91,7 +91,7 @@ export default function Dashboard() {
       <div className="bracu-bg min-h-screen flex items-center justify-center relative">
         <div className="text-center relative z-10">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4 text-white">Loading your dashboard...</p>
+          <p className="mt-4 text-gray-700">Loading your dashboard...</p>
         </div>
       </div>
     )
@@ -102,7 +102,7 @@ export default function Dashboard() {
       <div className="bracu-bg min-h-screen flex items-center justify-center relative">
         <div className="text-center relative z-10">
           <p className="text-red-300 mb-4">Error loading dashboard data</p>
-          <p className="text-gray-200 mb-4">Session: {session?.user?.email}</p>
+          <p className="text-gray-700 mb-4">Session: {session?.user?.email}</p>
           <Button onClick={() => window.location.reload()}>Retry</Button>
         </div>
       </div>
@@ -156,14 +156,14 @@ function AdminDashboard({ dashboardData, session }: { dashboardData: DashboardDa
       {/* Content container */}
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
-          {/* Frosted glass container */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20 transition-all duration-300 hover:bg-white/15">
+          {/* White frosted glass container */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
             {/* Welcome Section */}
             <div className="mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-lg">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 drop-shadow-lg">
                 OCA Admin Dashboard
               </h1>
-              <p className="mt-2 text-sm sm:text-base text-gray-200 drop-shadow">
+              <p className="mt-2 text-sm sm:text-base text-gray-700 drop-shadow">
                 Welcome back, {dashboardData.user.name} • Office of Co-Curricular Activities
               </p>
             </div>
@@ -310,14 +310,14 @@ function ClubLeaderDashboard({ dashboardData, session }: { dashboardData: Dashbo
       {/* Content container */}
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
-          {/* Frosted glass container */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20 transition-all duration-300 hover:bg-white/15">
+          {/* White frosted glass container */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
             {/* Welcome Section */}
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-white drop-shadow-lg">
+              <h1 className="text-3xl font-bold text-gray-900 drop-shadow-lg">
             Club Leader Dashboard
           </h1>
-          <p className="mt-2 text-gray-200">
+          <p className="mt-2 text-gray-700">
             Welcome back, {dashboardData.user.name}
             {dashboardData.user.studentId && ` • Student ID: ${dashboardData.user.studentId}`}
             {dashboardData.user.department && ` • ${dashboardData.user.department}`}
@@ -502,14 +502,14 @@ function StudentDashboard({ dashboardData, session }: { dashboardData: Dashboard
       {/* Content container */}
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
-          {/* Frosted glass container */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20 transition-all duration-300 hover:bg-white/15">
+          {/* White frosted glass container */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
             {/* Welcome Section */}
             <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white drop-shadow-lg">
+          <h1 className="text-3xl font-bold text-gray-900 drop-shadow-lg">
             Welcome back, {dashboardData.user.name}!
           </h1>
-          <p className="mt-2 text-gray-200">
+          <p className="mt-2 text-gray-700">
             {dashboardData.user.studentId && `Student ID: ${dashboardData.user.studentId}`}
             {dashboardData.user.department && ` • ${dashboardData.user.department}`}
           </p>
@@ -608,7 +608,7 @@ function StudentDashboard({ dashboardData, session }: { dashboardData: Dashboard
                 {dashboardData.recentEvents.map((event) => (
                   <div key={event.id} className="border rounded-lg p-4">
                     <h3 className="font-semibold text-sm">{event.title}</h3>
-                    <p className="text-xs text-gray-200 mt-1">by {event.clubName}</p>
+                    <p className="text-xs text-gray-700 mt-1">by {event.clubName}</p>
                     <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />

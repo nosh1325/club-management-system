@@ -36,7 +36,7 @@ export default function Navigation() {
     { href: '/club-leader/memberships', label: 'Applications', icon: Clock },
     { href: '/events/manage', label: 'Manage Events', icon: Calendar },
     { href: '/club-database', label: 'Club Database', icon: Book },
-    { href: 'budget-requests', label: 'Budget', icon: Settings },
+    { href: '/budget-requests', label: 'Budget', icon: Settings },
     { href: '/profile', label: 'Profile', icon: User },
   ]
 

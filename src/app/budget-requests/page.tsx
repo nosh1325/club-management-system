@@ -229,10 +229,10 @@ export default function BudgetRequestsPage() {
             backgroundAttachment: 'fixed'
           }}
         ></div>
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+  <div className="absolute inset-0 bg-white/30"></div>
         <div className="text-center relative z-10">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4 text-white text-lg">Loading budget requests...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-700 mx-auto"></div>
+          <p className="mt-4 text-gray-700 text-lg">Loading budget requests...</p>
         </div>
       </div>
     )
@@ -248,19 +248,19 @@ export default function BudgetRequestsPage() {
         backgroundAttachment: 'fixed'
       }}
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/50"></div>
+      {/* Light overlay for better contrast without darkening the page */}
+      <div className="absolute inset-0 bg-white/30"></div>
       
       {/* Content container */}
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto w-full">
-          {/* Frosted glass container */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20">
+          {/* White frosted glass container */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
             {/* Header */}
             <div className="mb-8 flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-white drop-shadow-lg">Budget Requests</h1>
-                <p className="mt-2 text-gray-200 drop-shadow">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Budget Requests</h1>
+                <p className="mt-2 text-sm sm:text-base text-gray-700">
                   Manage budget requests for your clubs 
                 </p>
               </div>
@@ -278,14 +278,14 @@ export default function BudgetRequestsPage() {
             {/* Loading State */}
             {(loadingClubs || loading) && (
               <div className="text-center py-8">
-                <div className="text-white">Loading...</div>
+                <div className="text-gray-700">Loading...</div>
               </div>
             )}
 
             {/* Error Message */}
             {error && (
               <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
-                <p className="text-red-100 font-medium">{error}</p>
+                <p className="text-red-700 font-medium">{error}</p>
               </div>
             )}
 
@@ -445,8 +445,8 @@ export default function BudgetRequestsPage() {
 
             {/* Create Request Modal */}
             {showCreateForm && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4 sm:p-6">
+                <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-xl">
                   <form onSubmit={handleSubmit}>
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-6">

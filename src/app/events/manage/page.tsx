@@ -161,8 +161,8 @@ const formatTime = (dateString: string) => {
     return (
       <div className="bracu-bg min-h-screen flex items-center justify-center relative">
         <div className="text-center relative z-10">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4 text-white">Loading events...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-700 mx-auto"></div>
+          <p className="mt-4 text-gray-700">Loading events...</p>
         </div>
       </div>
     )
@@ -181,10 +181,10 @@ const formatTime = (dateString: string) => {
       <div className="absolute inset-0 bg-black/50"></div>
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20 transition-all duration-300 hover:bg-white/15">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60 transition-all duration-300 hover:bg-white/90">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-white drop-shadow-lg">Events</h1>
-              <p className="mt-2 text-gray-200 drop-shadow">
+              <h1 className="text-3xl font-bold text-gray-900 drop-shadow-lg">Events</h1>
+              <p className="mt-2 text-gray-700 drop-shadow">
                 Discover and participate in exciting events hosted by university clubs
               </p>
             </div>
@@ -272,8 +272,8 @@ const formatTime = (dateString: string) => {
             {filteredEvents.length === 0 && (
               <div className="text-center py-12">
                 <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-white mb-2">No events found</h3>
-                <p className="text-gray-200">
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
+                <p className="text-gray-700">
                   Try adjusting your search terms or filters to find events that interest you.
                 </p>
               </div>

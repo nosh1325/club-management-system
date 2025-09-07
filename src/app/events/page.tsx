@@ -158,7 +158,7 @@ export default function EventsPage() {
       <div className="bracu-bg min-h-screen flex items-center justify-center relative">
         <div className="text-center relative z-10">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4 text-white">Loading...</p>
+          <p className="mt-4 text-gray-700">Loading...</p>
         </div>
       </div>
     )
@@ -168,7 +168,7 @@ export default function EventsPage() {
     return (
       <div className="bracu-bg min-h-screen flex items-center justify-center relative">
         <div className="text-center relative z-10">
-          <p className="text-white mb-4">Please sign in to view events</p>
+          <p className="text-gray-700 mb-4">Please sign in to view events</p>
           <Button onClick={() => router.push('/auth/signin')}>
             Sign In
           </Button>
@@ -182,7 +182,7 @@ export default function EventsPage() {
       <div className="bracu-bg min-h-screen flex items-center justify-center relative">
         <div className="text-center relative z-10">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4 text-white">Loading events...</p>
+          <p className="mt-4 text-gray-700">Loading events...</p>
         </div>
       </div>
     )
@@ -201,10 +201,10 @@ export default function EventsPage() {
       <div className="absolute inset-0 bg-black/50"></div>
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/20 transition-all duration-300 hover:bg-white/15">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-white drop-shadow-lg">Events</h1>
-              <p className="mt-2 text-gray-200 drop-shadow">
+              <h1 className="text-3xl font-bold text-gray-900 drop-shadow-lg">Events</h1>
+              <p className="mt-2 text-gray-700 drop-shadow">
                 Discover and participate in exciting events hosted by university clubs
               </p>
             </div>
@@ -233,28 +233,28 @@ export default function EventsPage() {
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {filteredEvents.map((event) => (
-                <Card key={event.id} className="h-full flex flex-col p-4">
+                <Card key={event.id} className="h-full flex flex-col p-4 bg-white/80 backdrop-blur-sm border border-white/60">
                   <div className="flex items-center mb-2">
                     {event.club.logo && (
                       <img src={event.club.logo} alt={event.club.name} className="h-8 w-8 rounded-full mr-2" />
                     )}
-                    <span className="font-semibold text-white">{event.club.name}</span>
+                    <span className="font-semibold text-gray-900">{event.club.name}</span>
                   </div>
-                  <h2 className="text-xl font-bold text-white mb-1">{event.title}</h2>
-                  <div className="text-gray-200 mb-2">{event.description}</div>
-                  <div className="text-gray-300 text-sm mb-1">
+                  <h2 className="text-xl font-bold text-gray-900 mb-1">{event.title}</h2>
+                  <div className="text-gray-700 mb-2">{event.description}</div>
+                  <div className="text-gray-600 text-sm mb-1">
                     <span>{formatDate(event.startDate)} {formatTime(event.startDate)}</span>
                     {' '}to{' '}
                     <span>{formatDate(event.endDate)} {formatTime(event.endDate)}</span>
                   </div>
-                  <div className="text-gray-300 text-sm mb-1">Venue: {event.venue}</div>
+                  <div className="text-gray-600 text-sm mb-1">Venue: {event.venue}</div>
                   {event.capacity && (
-                    <div className="text-gray-300 text-sm mb-1">
+                    <div className="text-gray-600 text-sm mb-1">
                       Capacity: {event.capacity} | Attending: {event.attendeeCount}
                     </div>
                   )}
                   {event.requirements && (
-                    <div className="text-gray-300 text-sm mb-1">Requirements: {event.requirements}</div>
+                    <div className="text-gray-600 text-sm mb-1">Requirements: {event.requirements}</div>
                   )}
                   <div className="mt-auto flex gap-2">
                     {event.userRsvpStatus === 'ATTENDING' ? (
@@ -271,10 +271,10 @@ export default function EventsPage() {
               ))}
             </div>
             {filteredEvents.length === 0 && (
-              <div className="text-center py-12">
-                <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-white mb-2">No events found</h3>
-                <p className="text-gray-200">
+              <div className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-lg border border-white/60">
+                <Calendar className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
+                <p className="text-gray-700">
                   Try adjusting your search terms or filters to find events that interest you.
                 </p>
               </div>

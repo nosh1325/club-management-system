@@ -68,10 +68,8 @@ body {
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 94.1%;
-/* Removed duplicate body selector, merged styles above */
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
- }
+  }
+  /* Avoid forcing a heavy dark overlay; keep text colors only */
 }
 /* Mobile-first responsive utilities */
 .line-clamp-3 {

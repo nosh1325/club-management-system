@@ -70,29 +70,54 @@ export default function AdminBudgetPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading budget data...</p>
+      <div className="min-h-screen relative flex items-center justify-center">
+        <div 
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url('/images/bracu-campus.jpg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed'
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="text-center relative z-10">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-700 mx-auto"></div>
+          <p className="mt-4 text-gray-700 text-lg">Loading budget data...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Budget Management</h1>
-          <p className="mt-2 text-gray-600">
-            Manage club budget requests and financial allocations
-          </p>
-        </div>
+    <div 
+      className="min-h-screen relative"
+      style={{
+        backgroundImage: `url('/images/bracu-campus.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Very light overlay for maximum contrast */}
+      <div className="absolute inset-0 bg-black/10"></div>
+      
+      {/* Content container */}
+      <div className="relative z-10 min-h-screen">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* White frosted glass container */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 sm:p-8 shadow-2xl border border-white/60">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900">Budget Management</h1>
+              <p className="mt-2 text-gray-700">
+                Manage club budget requests and financial allocations
+              </p>
+            </div>
 
         {/* Budget Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="bg-white/90 backdrop-blur">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -104,7 +129,7 @@ export default function AdminBudgetPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-white/90 backdrop-blur">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -116,7 +141,7 @@ export default function AdminBudgetPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-white/90 backdrop-blur">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -128,7 +153,7 @@ export default function AdminBudgetPage() {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="bg-white/90 backdrop-blur">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -142,7 +167,7 @@ export default function AdminBudgetPage() {
         </div>
 
         {/* Recent Budget Requests */}
-        <Card className="mb-8">
+        <Card className="bg-white/90 backdrop-blur mb-8">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
@@ -161,13 +186,13 @@ export default function AdminBudgetPage() {
           <CardContent>
             {loading ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="mt-4 text-gray-600">Loading budget requests...</p>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-700 mx-auto"></div>
+                <p className="mt-4 text-gray-700">Loading budget requests...</p>
               </div>
             ) : recentRequests.length > 0 ? (
               <div className="space-y-4">
                 {recentRequests.map((request) => (
-                  <div key={request.id} className="border rounded-lg p-4">
+                  <div key={request.id} className="border rounded-lg p-4 bg-white/80 backdrop-blur">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
@@ -198,7 +223,7 @@ export default function AdminBudgetPage() {
         </Card>
 
         {/* Quick Actions */}
-        <Card>
+        <Card className="bg-white/90 backdrop-blur">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
             <CardDescription>Common budget management tasks</CardDescription>
@@ -230,6 +255,8 @@ export default function AdminBudgetPage() {
             </div>
           </CardContent>
         </Card>
+          </div>
+        </div>
       </div>
     </div>
   )
