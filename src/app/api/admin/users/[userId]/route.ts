@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 
-// DELETE - Delete a user and all their data
+// DELETE - Delete a user and all their data (Updated for Next.js 15)
 export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ userId: string }> }
