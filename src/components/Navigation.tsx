@@ -16,7 +16,8 @@ import {
   Clock,
   User,
   Menu,
-  X
+  X,
+  Book
 } from 'lucide-react'
 
 export default function Navigation() {
@@ -33,14 +34,18 @@ export default function Navigation() {
   const clubLeaderLinks = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/club-leader/memberships', label: 'Applications', icon: Clock },
-    { href: '/clubs', label: 'Discover Clubs', icon: Building2 },
+    { href: '/events/manage', label: 'Manage Events', icon: Calendar },
+    { href: '/club-database', label: 'Club Database', icon: Book },
+    { href: 'budget-requests', label: 'Budget', icon: Settings },
     { href: '/profile', label: 'Profile', icon: User },
   ]
 
   const adminLinks = [
     { href: '/admin', label: 'Admin Dashboard', icon: Shield },
     { href: '/admin/clubs', label: 'Clubs', icon: Building2 },
-    //{ href: '/admin/budget', label: 'Budget Requests', icon: Settings },
+    { href: '/admin/users', label: 'Users', icon: Users },
+    { href: '/admin/memberships', label: 'Memberships', icon: Users },
+    { href: '/admin/budget', label: 'Budget Requests', icon: Settings },
     { href: '/profile', label: 'Profile', icon: User },
   ]
 

@@ -151,15 +151,16 @@ export default function SignUpPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="studentId">Student ID</Label>
-                  <Input
-                    id="studentId"
-                    name="studentId"
-                    type="text"
-                    value={formData.studentId}
-                    onChange={handleChange}
-                    placeholder="e.g., 21101234"
-                  />
+                    <Label htmlFor="studentId">Student ID *</Label>
+                    <Input
+                      id="studentId"
+                      name="studentId"
+                      type="text"
+                      required
+                      value={formData.studentId}
+                      onChange={handleChange}
+                      placeholder="e.g., 21101234"
+                    />
                 </div>
 
                 <div>
@@ -176,15 +177,16 @@ export default function SignUpPage() {
               </div>
 
               <div>
-                <Label htmlFor="department">Department</Label>
-                <Input
-                  id="department"
-                  name="department"
-                  type="text"
-                  value={formData.department}
-                  onChange={handleChange}
-                  placeholder="e.g., Computer Science"
-                />
+                  <Label htmlFor="department">Department *</Label>
+                  <Input
+                    id="department"
+                    name="department"
+                    type="text"
+                    required
+                    value={formData.department}
+                    onChange={handleChange}
+                    placeholder="e.g., Computer Science"
+                  />
               </div>
 
               <div>
@@ -217,9 +219,9 @@ export default function SignUpPage() {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
                       <Eye className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <EyeOff className="h-4 w-4 text-gray-400" />
                     )}
                   </button>
                 </div>
@@ -243,9 +245,9 @@ export default function SignUpPage() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
                       <Eye className="h-4 w-4 text-gray-400" />
+                    ) : (
+                      <EyeOff className="h-4 w-4 text-gray-400" />
                     )}
                   </button>
                 </div>

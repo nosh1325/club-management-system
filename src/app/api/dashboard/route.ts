@@ -54,6 +54,37 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    // For club leaders, get clubs they are leading
+    let leadingClubs: any[] = []
+    let pendingMemberships = 0
+    if (user.role === 'CLUB_LEADER') {
+      leadingClubs = await db.club.findMany({
+        where: { 
+          leaderId: user.id 
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          _count: {
+            select: { 
+              memberships: {
+                where: { status: 'ACCEPTED' }
+              }
+            }
+          }
+        }
+      })
+
+      // Get pending memberships for clubs they lead
+      pendingMemberships = await db.membership.count({
+        where: {
+          clubId: { in: leadingClubs.map(club => club.id) },
+          status: 'PENDING'
+        }
+      })
+    }
+
     // Get user's event RSVPs
     const eventRsvps = await db.eventRsvp.findMany({
       where: { 
@@ -96,7 +127,8 @@ export async function GET(request: NextRequest) {
       stats: {
         clubsJoined: memberships.length,
         eventsAttending: eventRsvps.length,
-        pendingApplications
+        pendingApplications,
+        pendingMemberships: user.role === 'CLUB_LEADER' ? pendingMemberships : undefined
       },
       recentEvents: eventRsvps.map((rsvp: any) => ({
         id: rsvp.event.id,
@@ -105,13 +137,21 @@ export async function GET(request: NextRequest) {
         startDate: rsvp.event.startDate.toISOString(),
         clubName: rsvp.event.club.name
       })),
-      myClubs: memberships.map((membership: any) => ({
-        id: membership.club.id,
-        name: membership.club.name,
-        description: membership.club.description || '',
-        memberCount: membership.club._count.memberships,
-        role: membership.role
-      }))
+      myClubs: user.role === 'CLUB_LEADER' 
+        ? leadingClubs.map((club: any) => ({
+            id: club.id,
+            name: club.name,
+            description: club.description || '',
+            memberCount: club._count.memberships,
+            role: 'LEADER'
+          }))
+        : memberships.map((membership: any) => ({
+            id: membership.club.id,
+            name: membership.club.name,
+            description: membership.club.description || '',
+            memberCount: membership.club._count.memberships,
+            role: membership.role
+          }))
     }
 
     return NextResponse.json(dashboardData)

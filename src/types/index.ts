@@ -160,3 +160,26 @@ export interface CreateBudgetRequestData {
   amount: number
   purpose: string
 }
+
+// Notification types
+export type NotificationType = 'GENERAL' | 'CLUB_SPECIFIC' | 'EVENT' | 'URGENT' | 'MAINTENANCE'
+
+export type NotificationTarget = 'ALL_USERS' | 'ALL_CLUB_LEADERS' | 'SPECIFIC_CLUB' | 'STUDENTS_ONLY' | 'ADMINS_ONLY'
+
+export interface NotificationWithStatus extends Notification {
+  isRead?: boolean
+  readAt?: Date
+}
+
+export interface CreateNotificationData {
+  title: string
+  message: string
+  type: NotificationType
+  target: NotificationTarget
+  clubId?: string
+}
+
+export interface NotificationStats {
+  total: number
+  unread: number
+}

@@ -6,8 +6,10 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Building2, Users, Search, Plus, X, User2 } from 'lucide-react'
+import { Building2, Users, Search, Edit, Trash2, Plus, X, User2 } from 'lucide-react'
+import Link from 'next/link'
 
 interface User {
   id: string;
@@ -108,6 +110,17 @@ export default function AdminClubsPage() {
   const [filteredClubs, setFilteredClubs] = useState<Club[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
+  const [editingClub, setEditingClub] = useState<Club | null>(null)
+  const [editForm, setEditForm] = useState({
+    name: '',
+    description: '',
+    department: '',
+    status: '',
+    foundedYear: '',
+    vision: '',
+    mission: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   
   useEffect(() => {
@@ -157,6 +170,102 @@ export default function AdminClubsPage() {
     setFilteredClubs(filtered)
   }, [searchTerm, clubs])
 
+  const handleEditClub = (club: Club) => {
+    setEditingClub(club)
+    setEditForm({
+      name: club.name,
+      description: club.description || '',
+      department: club.department,
+      status: club.status || 'ACTIVE',
+      foundedYear: club.foundedYear?.toString() || '',
+      vision: '',
+      mission: ''
+    })
+  }
+
+  const handleCloseEdit = () => {
+    setEditingClub(null)
+    setEditForm({
+      name: '',
+      description: '',
+      department: '',
+      status: '',
+      foundedYear: '',
+      vision: '',
+      mission: ''
+    })
+  }
+
+  const handleUpdateClub = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!editingClub) return
+
+    setIsSubmitting(true)
+
+    // Basic validation
+    if (!editForm.name || !editForm.department || !editForm.status) {
+        alert('Please fill in all required fields.')
+        setIsSubmitting(false)
+        return
+    }
+
+    try {
+        const response = await fetch(`/api/admin/clubs/${editingClub.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ...editForm,
+                foundedYear: editForm.foundedYear ? parseInt(editForm.foundedYear, 10) : null
+            })
+        })
+
+        if (!response.ok) {
+            const errorData = await response.json()
+            throw new Error(errorData.error || 'Failed to update club')
+        }
+
+        const updatedClub = await response.json()
+
+        setClubs(prevClubs =>
+            prevClubs.map(c => (c.id === updatedClub.id ? { ...c, ...updatedClub } : c))
+        )
+        setEditingClub(null)
+    } catch (error) {
+        console.error('Error updating club:', error)
+        alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+        setIsSubmitting(false)
+    }
+  }
+
+  const handleDeleteClub = async (clubId: string, clubName: string) => {
+    if (!window.confirm(`Are you sure you want to delete the club "${clubName}"? This action cannot be undone.`)) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/admin/clubs`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ clubId })
+      })
+
+      if (!response.ok) {
+        const errorData: { error: string } = await response.json()
+        throw new Error(errorData.error || 'Failed to delete club')
+      }
+
+      setClubs(prevClubs => prevClubs.filter(c => c.id !== clubId))
+    } catch (error) {
+      console.error('Error deleting club:', error)
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
 
 
   if (loading) {
@@ -203,10 +312,12 @@ export default function AdminClubsPage() {
                   Manage all university clubs and their status
                 </p>
               </div>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Club
-              </Button>
+              <Link href="/admin/clubs/add">
+                <Button variant="outline" className="w-full justify-start">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add New Club
+                </Button>
+              </Link>
             </div>
 
         {/* Search and Stats */}
@@ -306,7 +417,7 @@ export default function AdminClubsPage() {
                       <p className="text-gray-600 mb-3">{club.description}</p>
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-500">
                         <div>
-                          <span className="font-medium">Leader:</span> {club.leader.name}
+                          <span className="font-medium">Leader:</span> {club.leader?.name || 'No Leader'}
                         </div>
                         <div>
                           <span className="font-medium">Members:</span> {club.memberCount}
@@ -320,6 +431,14 @@ export default function AdminClubsPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleEditClub(club)}
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Edit
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
@@ -327,6 +446,15 @@ export default function AdminClubsPage() {
                       >
                         <User2 className="h-4 w-4 mr-1" />
                         Change Leader
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-red-600 border-red-300 hover:bg-red-50"
+                        onClick={() => handleDeleteClub(club.id, club.name)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
                       </Button>
                     </div>
                   </div>
@@ -380,6 +508,142 @@ export default function AdminClubsPage() {
             <p className="text-gray-600">
               Try adjusting your search terms to find the clubs you&apos;re looking for.
             </p>
+          </div>
+        )}
+
+        {/* Edit Club Modal */}
+        {editingClub && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <form onSubmit={handleUpdateClub}>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-semibold">Edit Club</h2>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCloseEdit}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="edit-name">Club Name</Label>
+                      <Input
+                        id="edit-name"
+                        value={editForm.name}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Enter club name"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="edit-description">Description</Label>
+                      <textarea
+                        id="edit-description"
+                        value={editForm.description}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
+                        placeholder="Enter club description"
+                        className="w-full p-2 border border-gray-300 rounded-md resize-none"
+                        rows={4}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="edit-department">Department/Category</Label>
+                        <select
+                          id="edit-department"
+                          value={editForm.department}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, department: e.target.value }))}
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                          required
+                        >
+                          <option value="">Select category</option>
+                          <option value="Academic">Academic</option>
+                          <option value="Extra-Curricular">Extra-Curricular</option>
+                          <option value="Sports">Sports</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="edit-status">Status</Label>
+                        <select
+                          id="edit-status"
+                          value={editForm.status}
+                          onChange={(e) => setEditForm(prev => ({ ...prev, status: e.target.value }))}
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                          required
+                        >
+                          <option value="PENDING">Pending</option>
+                          <option value="ACTIVE">Active</option>
+                          <option value="INACTIVE">Inactive</option>
+                          <option value="SUSPENDED">Suspended</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="edit-foundedYear">Founded Year</Label>
+                      <Input
+                        id="edit-foundedYear"
+                        type="number"
+                        min="1900"
+                        max={new Date().getFullYear()}
+                        value={editForm.foundedYear}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, foundedYear: e.target.value }))}
+                        placeholder="Enter founded year"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="edit-vision">Vision</Label>
+                      <textarea
+                        id="edit-vision"
+                        value={editForm.vision}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, vision: e.target.value }))}
+                        placeholder="Enter club vision"
+                        className="w-full p-2 border border-gray-300 rounded-md resize-none"
+                        rows={3}
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="edit-mission">Mission</Label>
+                      <textarea
+                        id="edit-mission"
+                        value={editForm.mission}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, mission: e.target.value }))}
+                        placeholder="Enter club mission"
+                        className="w-full p-2 border border-gray-300 rounded-md resize-none"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleCloseEdit}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting || !editForm.name.trim() || !editForm.department}
+                    >
+                      {isSubmitting ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         )}
 

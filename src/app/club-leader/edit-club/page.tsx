@@ -5,9 +5,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Building2, Save, ArrowLeft, Loader2 } from 'lucide-react'
+import { Building2, ArrowLeft, Edit } from 'lucide-react'
 import Link from 'next/link'
 
 interface Club {
@@ -16,23 +14,14 @@ interface Club {
   description: string
   category: string
   department: string
-  email: string
-  phone: string
-  website: string
-  advisor: string
-  vision: string
-  mission: string
-  activities: string
 }
 
-export default function EditClubPage() {
+export default function SelectClubToEditPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [club, setClub] = useState<Club | null>(null)
+  const [clubs, setClubs] = useState<Club[]>([])
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
 
   useEffect(() => {
     if (status === 'loading') return
@@ -47,74 +36,24 @@ export default function EditClubPage() {
       return
     }
 
-    fetchClubData()
+    fetchClubs()
   }, [session, status, router])
 
-  const fetchClubData = async () => {
+  const fetchClubs = async () => {
     try {
       const response = await fetch('/api/club-leader/club-info')
       if (response.ok) {
         const data = await response.json()
-        setClub(data.club)
+        setClubs(data.clubs || [])
       } else {
         const errorData = await response.json()
-        setError(errorData.error || 'Failed to fetch club data')
+        setError(errorData.error || 'Failed to fetch clubs')
       }
     } catch (error) {
-      console.error('Error fetching club data:', error)
-      setError('Failed to fetch club data')
+      console.error('Error fetching clubs:', error)
+      setError('Failed to fetch clubs')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleInputChange = (field: keyof Club, value: string) => {
-    if (!club) return
-    setClub({ ...club, [field]: value })
-  }
-
-  const handleSave = async () => {
-    if (!club) return
-
-    setSaving(true)
-    setError('')
-    setSuccess('')
-
-    try {
-      const response = await fetch(`/api/club-leader/club-info/${club.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: club.name,
-          description: club.description,
-          category: club.category,
-          department: club.department,
-          email: club.email,
-          phone: club.phone,
-          website: club.website,
-          advisor: club.advisor,
-          vision: club.vision,
-          mission: club.mission,
-          activities: club.activities,
-        }),
-      })
-
-      if (response.ok) {
-        setSuccess('Club information updated successfully!')
-        setTimeout(() => {
-          router.push('/dashboard')
-        }, 2000)
-      } else {
-        const errorData = await response.json()
-        setError(errorData.error || 'Failed to update club information')
-      }
-    } catch (error) {
-      console.error('Error updating club:', error)
-      setError('Failed to update club information')
-    } finally {
-      setSaving(false)
     }
   }
 
@@ -123,20 +62,7 @@ export default function EditClubPage() {
       <div className="bracu-bg min-h-screen flex items-center justify-center">
         <div className="text-center relative z-10">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white mx-auto"></div>
-          <p className="mt-4 text-white">Loading club information...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!club) {
-    return (
-      <div className="bracu-bg min-h-screen flex items-center justify-center">
-        <div className="text-center relative z-10">
-          <p className="text-red-300 mb-4">No club found or you're not authorized to edit this club.</p>
-          <Link href="/dashboard">
-            <Button>Back to Dashboard</Button>
-          </Link>
+          <p className="mt-4 text-white">Loading clubs...</p>
         </div>
       </div>
     )
@@ -173,204 +99,56 @@ export default function EditClubPage() {
               </div>
               <h1 className="text-3xl font-bold text-white drop-shadow-lg flex items-center gap-3">
                 <Building2 className="h-8 w-8" />
-                Edit Club Information
+                Select Club to Edit
               </h1>
               <p className="mt-2 text-gray-200">
-                Update your club's public information and details
+                Choose which club you want to edit information for
               </p>
             </div>
 
-            {/* Success/Error Messages */}
-            {success && (
-              <div className="mb-6 p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
-                <p className="text-green-100">{success}</p>
-              </div>
-            )}
-
+            {/* Error Message */}
             {error && (
               <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg">
                 <p className="text-red-100">{error}</p>
               </div>
             )}
 
-            {/* Edit Form */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Basic Information */}
-              <Card className="bg-white/5 border-white/10">
-                <CardHeader>
-                  <CardTitle className="text-white">Basic Information</CardTitle>
-                  <CardDescription className="text-gray-300">
-                    Core details about your club
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="name" className="text-white">Club Name *</Label>
-                    <Input
-                      id="name"
-                      value={club.name}
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      placeholder="Enter club name"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="description" className="text-white">Description *</Label>
-                    <textarea
-                      id="description"
-                      value={club.description}
-                      onChange={(e) => handleInputChange('description', e.target.value)}
-                      className="w-full min-h-[100px] p-3 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 resize-vertical"
-                      placeholder="Describe your club's purpose and activities"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="category" className="text-white">Category</Label>
-                    <Input
-                      id="category"
-                      value={club.category || ''}
-                      onChange={(e) => handleInputChange('category', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      placeholder="e.g., Academic, Cultural, Sports"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="department" className="text-white">Department</Label>
-                    <Input
-                      id="department"
-                      value={club.department || ''}
-                      onChange={(e) => handleInputChange('department', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      placeholder="Associated department"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Contact Information */}
-              <Card className="bg-white/5 border-white/10">
-                <CardHeader>
-                  <CardTitle className="text-white">Contact Information</CardTitle>
-                  <CardDescription className="text-gray-300">
-                    How students can reach your club
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="email" className="text-white">Club Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={club.email || ''}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      placeholder="club@bracu.ac.bd"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="phone" className="text-white">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      value={club.phone || ''}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      placeholder="+880 1XXXXXXXXX"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="website" className="text-white">Website</Label>
-                    <Input
-                      id="website"
-                      value={club.website || ''}
-                      onChange={(e) => handleInputChange('website', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      placeholder="https://yourclub.com"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="advisor" className="text-white">Faculty Advisor</Label>
-                    <Input
-                      id="advisor"
-                      value={club.advisor || ''}
-                      onChange={(e) => handleInputChange('advisor', e.target.value)}
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      placeholder="Dr. Faculty Name"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Vision & Mission */}
-              <Card className="bg-white/5 border-white/10 lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-white">Vision & Mission</CardTitle>
-                  <CardDescription className="text-gray-300">
-                    Your club's goals and aspirations
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="vision" className="text-white">Vision</Label>
-                    <textarea
-                      id="vision"
-                      value={club.vision || ''}
-                      onChange={(e) => handleInputChange('vision', e.target.value)}
-                      className="w-full min-h-[80px] p-3 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 resize-vertical"
-                      placeholder="What your club aspires to achieve"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="mission" className="text-white">Mission</Label>
-                    <textarea
-                      id="mission"
-                      value={club.mission || ''}
-                      onChange={(e) => handleInputChange('mission', e.target.value)}
-                      className="w-full min-h-[80px] p-3 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 resize-vertical"
-                      placeholder="How your club will achieve its vision"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="activities" className="text-white">Activities</Label>
-                    <textarea
-                      id="activities"
-                      value={club.activities || ''}
-                      onChange={(e) => handleInputChange('activities', e.target.value)}
-                      className="w-full min-h-[80px] p-3 bg-white/10 border border-white/20 rounded-md text-white placeholder-gray-400 resize-vertical"
-                      placeholder="Regular activities and events your club organizes"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Save Button */}
-            <div className="mt-8 flex justify-end">
-              <Button 
-                onClick={handleSave}
-                disabled={saving}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2"
-              >
-                {saving ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Changes
-                  </>
-                )}
-              </Button>
-            </div>
+            {/* Clubs List */}
+            {clubs.length === 0 ? (
+              <div className="text-center py-12">
+                <Building2 className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-white mb-2">No clubs found</h3>
+                <p className="text-gray-200">
+                  You are not assigned as a leader of any clubs yet.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {clubs.map((club) => (
+                  <Card key={club.id} className="bg-white/5 border-white/10 hover:bg-white/10 transition-all">
+                    <CardHeader>
+                      <CardTitle className="text-white">{club.name}</CardTitle>
+                      <CardDescription className="text-gray-300">
+                        {club.department && `${club.department} • `}
+                        {club.category || 'No category'}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                        {club.description || 'No description available'}
+                      </p>
+                      <Button 
+                        onClick={() => router.push(`/club-leader/edit-club/${club.id}`)}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit Club Info
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

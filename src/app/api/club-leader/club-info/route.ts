@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 
-// GET - Fetch club information for the authenticated club leader
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
@@ -15,7 +15,7 @@ export async function GET() {
       )
     }
 
-    // Check if user is a club leader
+   
     if (session.user.role !== 'CLUB_LEADER') {
       return NextResponse.json(
         { error: 'Access denied. Only club leaders can access this resource.' },
@@ -23,7 +23,7 @@ export async function GET() {
       )
     }
 
-    // Find the user
+    
     const user = await db.user.findUnique({
       where: { email: session.user.email },
       select: { id: true }
@@ -36,8 +36,8 @@ export async function GET() {
       )
     }
 
-    // Find the club that this user leads
-    const club = await db.club.findFirst({
+    
+    const userClubs = await db.club.findMany({
       where: { leaderId: user.id },
       select: {
         id: true,
@@ -56,16 +56,73 @@ export async function GET() {
       }
     })
 
-    if (!club) {
-      return NextResponse.json(
-        { error: 'No club found for this user. You must be assigned as a club leader first.' },
-        { status: 404 }
-      )
+    
+    const membershipClubs = await db.club.findMany({
+      where: {
+        memberships: {
+          some: {
+            userId: user.id,
+            role: {
+              in: ["Club Leader", "President", "Leader"]
+            },
+            status: "ACCEPTED"
+          }
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        category: true,
+        department: true,
+        email: true,
+        phone: true,
+        website: true,
+        advisor: true,
+        vision: true,
+        mission: true,
+        activities: true,
+        status: true
+      }
+    })
+
+    
+    const allClubs = [...userClubs, ...membershipClubs]
+    const uniqueClubs = allClubs.filter((club, index, self) => 
+      index === self.findIndex(c => c.id === club.id)
+    )
+
+    if (uniqueClubs.length === 0) {
+      
+      const debugInfo = await db.user.findUnique({
+        where: { id: user.id },
+        select: {
+          role: true,
+          leadingClubs: { select: { id: true, name: true } },
+          memberships: {
+            select: {
+              role: true,
+              status: true,
+              club: { select: { name: true } }
+            }
+          }
+        }
+      })
+
+      return NextResponse.json({
+        error: 'No club found for this user. You must be assigned as a club leader first.',
+        debug: {
+          userRole: debugInfo?.role,
+          directClubs: debugInfo?.leadingClubs || [],
+          memberships: debugInfo?.memberships || []
+        }
+      }, { status: 404 })
     }
 
     return NextResponse.json({
       success: true,
-      club: club
+      clubs: uniqueClubs,
+      club: uniqueClubs[0] 
     })
 
   } catch (error) {

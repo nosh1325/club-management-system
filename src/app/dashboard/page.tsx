@@ -4,7 +4,8 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Building2, Calendar, Users, Clock, MapPin, Plus, Edit } from 'lucide-react'
+import { Building2, Calendar, Users, Clock, MapPin, Plus, Edit,Mail } from 'lucide-react'
+import { Bell, Megaphone } from 'lucide-react'
 import Link from 'next/link'
 
 interface DashboardData {
@@ -110,15 +111,35 @@ export default function Dashboard() {
 
   // Render different dashboards based on user role
   if (dashboardData.user.role === 'ADMIN') {
-    return <AdminDashboard dashboardData={dashboardData} />
+    return <AdminDashboard dashboardData={dashboardData} session={session} />
   } else if (dashboardData.user.role === 'CLUB_LEADER') {
-    return <ClubLeaderDashboard dashboardData={dashboardData} />
+    return <ClubLeaderDashboard dashboardData={dashboardData} session={session} />
   } else {
-    return <StudentDashboard dashboardData={dashboardData} />
+    return <StudentDashboard dashboardData={dashboardData} session={session} />
   }
 }
 
-function AdminDashboard({ dashboardData }: { dashboardData: DashboardData }) {
+function AdminDashboard({ dashboardData, session }: { dashboardData: DashboardData; session: any }) {
+  const [notificationCount, setNotificationCount] = useState(0)
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      try {
+        const response = await fetch('/api/notifications/stats')
+        if (response.ok) {
+          const data = await response.json()
+          const userReadKey = `readNotifications_${session?.user?.id}`
+          const readNotifications = JSON.parse(localStorage.getItem(userReadKey) || '[]')
+          const unread = Math.max(0, data.total - readNotifications.length)
+          setNotificationCount(unread)
+        }
+      } catch (error) {
+        console.error('Error fetching notification count:', error)
+      }
+    }
+    fetchNotificationCount()
+  }, [])
+
   return (
     <div 
       className="min-h-screen relative"
@@ -173,7 +194,65 @@ function AdminDashboard({ dashboardData }: { dashboardData: DashboardData }) {
               </div>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Event Management</CardTitle>
+              <CardDescription>Oversee all club events and activities</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-4">
+                <Link href="/admin/events">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    All Events
+                  </Button>
+                </Link>
+                <Link href="/admin/event-approvals">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Clock className="h-4 w-4 mr-2" />
+                    Event Approvals
+                  </Button>
+                </Link>
+                <Link href="/admin/budget">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Building2 className="h-4 w-4 mr-2" />
+                    Budget Management
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
+        {/* Notification and Message Quick Actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Communication</CardTitle>
+              <CardDescription>Send notifications and messages</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-4">
+                <Link href="/admin/notifications">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Megaphone className="h-4 w-4 mr-2" />
+                    Send Notifications
+                  </Button>
+                </Link>
+                <Link href="/notifications">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Bell className="h-4 w-4 mr-2" />
+                    Notifications
+                    {notificationCount > 0 && (
+                      <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                        {notificationCount}
+                      </span>
+                    )}
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Recent Activity */}
@@ -182,8 +261,11 @@ function AdminDashboard({ dashboardData }: { dashboardData: DashboardData }) {
             <CardTitle>Recent Activity</CardTitle>
             <CardDescription>Latest actions across the platform</CardDescription>
           </CardHeader>
-  
+          <CardContent>
+            <p className="text-gray-600">Recent platform activity will be displayed here.</p>
+          </CardContent>
         </Card>
+        
           </div>
         </div>
       </div>
@@ -191,7 +273,27 @@ function AdminDashboard({ dashboardData }: { dashboardData: DashboardData }) {
   )
 }
 
-function ClubLeaderDashboard({ dashboardData }: { dashboardData: DashboardData }) {
+function ClubLeaderDashboard({ dashboardData, session }: { dashboardData: DashboardData; session: any }) {
+  const [notificationCount, setNotificationCount] = useState(0)
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      try {
+        const response = await fetch('/api/notifications/stats')
+        if (response.ok) {
+          const data = await response.json()
+          const userReadKey = `readNotifications_${session?.user?.id}`
+          const readNotifications = JSON.parse(localStorage.getItem(userReadKey) || '[]')
+          const unread = Math.max(0, data.total - readNotifications.length)
+          setNotificationCount(unread)
+        }
+      } catch (error) {
+        console.error('Error fetching notification count:', error)
+      }
+    }
+    fetchNotificationCount()
+  }, [])
+
   return (
     <div 
       className="min-h-screen relative"
@@ -288,12 +390,34 @@ function ClubLeaderDashboard({ dashboardData }: { dashboardData: DashboardData }
                     Manage Members
                   </Button>
                 </Link>
-                
+                <Link href="/club-leader/email-members">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Send Emails
+                  </Button>
+                </Link>
+                <Link href="/events/create">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create New Event
+                  </Button>
+                </Link>
                 <Link href="/club-leader/edit-club">
                     <Button variant="outline" className="w-full justify-start">
                       <Edit className="h-4 w-4 mr-2" />
                       Edit Club Info
                     </Button>
+                </Link>
+                <Link href="/notifications">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Bell className="h-4 w-4 mr-2" />
+                    Notifications
+                    {notificationCount > 0 && (
+                      <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                        {notificationCount}
+                      </span>
+                    )}
+                  </Button>
                 </Link>
               </div>
             </CardContent>
@@ -342,7 +466,26 @@ function ClubLeaderDashboard({ dashboardData }: { dashboardData: DashboardData }
   )
 }
 
-function StudentDashboard({ dashboardData }: { dashboardData: DashboardData }) {
+function StudentDashboard({ dashboardData, session }: { dashboardData: DashboardData; session: any }) {
+  const [notificationCount, setNotificationCount] = useState(0)
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      try {
+        const response = await fetch('/api/notifications/stats')
+        if (response.ok) {
+          const data = await response.json()
+          const userReadKey = `readNotifications_${session?.user?.id}`
+          const readNotifications = JSON.parse(localStorage.getItem(userReadKey) || '[]')
+          const unread = Math.max(0, data.total - readNotifications.length)
+          setNotificationCount(unread)
+        }
+      } catch (error) {
+        console.error('Error fetching notification count:', error)
+      }
+    }
+    fetchNotificationCount()
+  }, [])
   return (
     <div 
       className="min-h-screen relative"
@@ -502,6 +645,17 @@ function StudentDashboard({ dashboardData }: { dashboardData: DashboardData }) {
                   <Button variant="outline" className="w-full justify-start">
                     <Calendar className="h-4 w-4 mr-2" />
                     Browse Events
+                  </Button>
+                </Link>
+                <Link href="/notifications">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Bell className="h-4 w-4 mr-2" />
+                    Notifications
+                    {notificationCount > 0 && (
+                      <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                        {notificationCount}
+                      </span>
+                    )}
                   </Button>
                 </Link>
                 <Link href="/profile">

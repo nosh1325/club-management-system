@@ -3,10 +3,10 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 
-// PUT - Update club information
+
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { clubId: string } }
+  context: { params: Promise<{ clubId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -18,7 +18,7 @@ export async function PUT(
       )
     }
 
-    // Check if user is a club leader
+   
     if (session.user.role !== 'CLUB_LEADER') {
       return NextResponse.json(
         { error: 'Access denied. Only club leaders can edit club information.' },
@@ -26,9 +26,9 @@ export async function PUT(
       )
     }
 
-    const clubId = params.clubId
+    const { clubId } = await context.params
 
-    // Find the user
+  
     const user = await db.user.findUnique({
       where: { email: session.user.email },
       select: { id: true }
@@ -41,11 +41,24 @@ export async function PUT(
       )
     }
 
-    // Verify that this user is the leader of the club they're trying to edit
+    
     const existingClub = await db.club.findFirst({
       where: { 
         id: clubId,
-        leaderId: user.id 
+        OR: [
+          { leaderId: user.id },
+          {
+            memberships: {
+              some: {
+                userId: user.id,
+                role: {
+                  in: ["Club Leader", "President", "Leader"]
+                },
+                status: "ACCEPTED"
+              }
+            }
+          }
+        ]
       }
     })
 
@@ -56,7 +69,7 @@ export async function PUT(
       )
     }
 
-    // Parse request body
+    
     const body = await request.json()
     const {
       name,
@@ -72,7 +85,7 @@ export async function PUT(
       activities
     } = body
 
-    // Validate required fields
+ 
     if (!name?.trim()) {
       return NextResponse.json(
         { error: 'Club name is required' },
@@ -87,7 +100,7 @@ export async function PUT(
       )
     }
 
-    // Check if name is unique (excluding current club)
+
     const nameExists = await db.club.findFirst({
       where: {
         name: name.trim(),
@@ -102,7 +115,7 @@ export async function PUT(
       )
     }
 
-    // Update the club
+   
     const updatedClub = await db.club.update({
       where: { id: clubId },
       data: {
@@ -136,7 +149,7 @@ export async function PUT(
       }
     })
 
-    console.log(`✅ Club updated successfully: ${updatedClub.name} by ${session.user.email}`)
+    
 
     return NextResponse.json({
       success: true,
