@@ -9,7 +9,13 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Users, Search, Check, X, Clock, Mail, GraduationCap,Building2,Calendar,UserCog, Send} from 'lucide-react'
-import BulkEmailModal from '@/components/email/BulkEmailModal'
+// import BulkEmailModal from '@/components/email/BulkEmailModal'
+import dynamic from 'next/dynamic'
+
+// Dynamic import to fix module loading issue
+const BulkEmailModal = dynamic(() => import('@/components/email/BulkEmailModal'), {
+  ssr: false
+})
 
 interface PendingMembership {
   id: string

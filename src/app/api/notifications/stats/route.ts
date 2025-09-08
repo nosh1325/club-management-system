@@ -21,7 +21,14 @@ export async function GET(request: NextRequest) {
 
     // Filter notifications for this user
     const userNotifications = allNotifications.filter(notification => {
-      const recipients = JSON.parse(notification.recipients)
+      let recipients;
+      try {
+        // Try to parse as JSON array
+        recipients = JSON.parse(notification.recipients);
+      } catch (error) {
+        // If it fails, treat as single email string
+        recipients = [notification.recipients];
+      }
       return recipients.includes(userId)
     })
 

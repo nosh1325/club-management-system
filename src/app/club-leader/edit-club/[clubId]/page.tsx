@@ -172,7 +172,7 @@ export default function EditSpecificClubPage({ params }: { params: Promise<{ clu
             <div className="mb-8">
               <div className="flex items-center gap-4 mb-4">
                 <Link href="/dashboard">
-                  <Button variant="outline" size="sm" className="text-white border-white/20 hover:bg-white/10">
+                  <Button variant="outline" size="sm" className="text-white border-gray-400 bg-gray-800/50 hover:bg-gray-700/70">
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to Dashboard
                   </Button>

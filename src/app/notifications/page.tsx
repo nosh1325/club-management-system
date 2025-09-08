@@ -195,7 +195,7 @@ export default function NotificationsPage() {
               <Button
                 variant={filter === 'all' ? 'default' : 'outline'}
                 onClick={() => setFilter('all')}
-                className={filter === 'all' ? 'bg-blue-600 text-white' : 'bg-white/20 border-white/30 text-white hover:bg-white/30'}
+                className={filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-800/80 border-gray-700 text-white hover:bg-gray-700/80'}
               >
                 All ({notifications.length})
               </Button>

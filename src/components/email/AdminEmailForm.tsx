@@ -38,8 +38,8 @@ export default function AdminEmailForm({ onEmailSent, userInfo }: AdminEmailForm
     setSending(true)
 
     try {
-      // Validate user email with admin API
-      const validateResponse = await fetch('/api/email/send-to-user', {
+      // Send email using server-side service
+      const response = await fetch('/api/email/send-real', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,35 +51,26 @@ export default function AdminEmailForm({ onEmailSent, userInfo }: AdminEmailForm
         })
       })
 
-      const validateResult = await validateResponse.json()
+      const result = await response.json()
 
-      if (!validateResponse.ok) {
-        showNotification('error', validateResult.error || 'Failed to validate user')
+      if (!response.ok) {
+        showNotification('error', result.error || 'Failed to send email')
         return
       }
 
-      // Send the email using the email service
-      const { default: emailService } = await import('@/lib/emailService')
-      
-      const emailResult = await emailService.sendEmailToMember(
-        validateResult.memberData.email,
-        validateResult.memberData.name,
-        validateResult.emailData.subject,
-        validateResult.emailData.message,
-        validateResult.memberData.clubName,
-        validateResult.memberData.senderName
-      )
-
-      if (emailResult.success) {
-        const message = emailResult.error === 'Skipped fake email' 
-          ? 'Email skipped (fake email address)' 
-          : 'Email sent successfully!'
+      if (result.success) {
+        let message = 'Email sent successfully!'
+        
+        if (result.simulation) {
+          message = '📧 Email simulated successfully! (Configure SMTP for real emails)'
+        }
+        
         showNotification('success', message)
         setSubject('')
         setMessage('')
-        onEmailSent?.(emailResult)
+        onEmailSent?.(result)
       } else {
-        showNotification('error', emailResult.error || 'Failed to send email')
+        showNotification('error', result.error || 'Failed to send email')
       }
     } catch (error) {
       console.error('Error sending email:', error)

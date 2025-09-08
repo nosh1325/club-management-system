@@ -442,9 +442,9 @@ function ClubLeaderDashboard({ dashboardData, session }: { dashboardData: Dashbo
                   <div key={club.id} className="border rounded-lg p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-sm">{club.name}</h3>
-                        <p className="text-xs text-gray-200 mt-1">{club.description}</p>
-                        <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                        <h3 className="font-semibold text-sm text-gray-900">{club.name}</h3>
+                        <p className="text-xs text-gray-700 mt-1">{club.description}</p>
+                        <div className="flex items-center gap-4 mt-2 text-xs text-gray-600">
                           <span className="flex items-center gap-1">
                             <Users className="h-3 w-3" />
                             {club.memberCount} members
@@ -572,9 +572,9 @@ function StudentDashboard({ dashboardData, session }: { dashboardData: Dashboard
                   <div key={club.id} className="border rounded-lg p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-sm">{club.name}</h3>
-                        <p className="text-xs text-gray-200 mt-1">{club.description}</p>
-                        <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                        <h3 className="font-semibold text-sm text-gray-900">{club.name}</h3>
+                        <p className="text-xs text-gray-700 mt-1">{club.description}</p>
+                        <div className="flex items-center gap-4 mt-2 text-xs text-gray-600">
                           <span className="flex items-center gap-1">
                             <Users className="h-3 w-3" />
                             {club.memberCount} members

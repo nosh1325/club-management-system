@@ -118,7 +118,7 @@ export default function CreateEventPage() {
       <div className="relative z-10 min-h-screen flex flex-col py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto w-full">
           {/* Frosted glass container */}
-          <div className="bg-white/15 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-white/30 transition-all duration-300 hover:bg-white/20">
+          <div className="bg-gray-900/90 backdrop-blur-md rounded-xl p-6 sm:p-8 shadow-2xl border border-gray-700 transition-all duration-300 hover:bg-gray-900/95">
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-white drop-shadow-2xl">Create New Event</h1>
@@ -161,7 +161,7 @@ export default function CreateEventPage() {
                         value={form.title}
                         onChange={handleFormChange}
                         required
-                        className="bg-white/15 border-white/30 text-white placeholder:text-gray-300 font-medium"
+                        className="bg-gray-800/80 border-gray-600 text-white placeholder:text-gray-300 font-medium focus:border-blue-400"
                       />
                     </div>
 
@@ -174,7 +174,7 @@ export default function CreateEventPage() {
                         value={form.venue}
                         onChange={handleFormChange}
                         required
-                        className="bg-white/15 border-white/30 text-white placeholder:text-gray-300 font-medium"
+                        className="bg-gray-800/80 border-gray-600 text-white placeholder:text-gray-300 font-medium focus:border-blue-400"
                       />
                     </div>
 
@@ -187,7 +187,7 @@ export default function CreateEventPage() {
                         value={form.startDate}
                         onChange={handleFormChange}
                         required
-                        className="bg-white/15 border-white/30 text-white font-medium"
+                        className="bg-gray-800/80 border-gray-600 text-white font-medium focus:border-blue-400"
                       />
                     </div>
 
@@ -200,7 +200,7 @@ export default function CreateEventPage() {
                         value={form.endDate}
                         onChange={handleFormChange}
                         required
-                        className="bg-white/15 border-white/30 text-white font-medium"
+                        className="bg-gray-800/80 border-gray-600 text-white font-medium focus:border-blue-400"
                       />
                     </div>
 
@@ -213,7 +213,7 @@ export default function CreateEventPage() {
                         placeholder="Max attendees (optional)"
                         value={form.capacity}
                         onChange={handleFormChange}
-                        className="bg-white/15 border-white/30 text-white placeholder:text-gray-300 font-medium"
+                        className="bg-gray-800/80 border-gray-600 text-white placeholder:text-gray-300 font-medium focus:border-blue-400"
                       />
                     </div>
 
@@ -225,7 +225,7 @@ export default function CreateEventPage() {
                         placeholder="Any special requirements"
                         value={form.requirements}
                         onChange={handleFormChange}
-                        className="bg-white/15 border-white/30 text-white placeholder:text-gray-300 font-medium"
+                        className="bg-gray-800/80 border-gray-600 text-white placeholder:text-gray-300 font-medium focus:border-blue-400"
                       />
                     </div>
 
@@ -242,7 +242,7 @@ export default function CreateEventPage() {
                           value={form.clubId}
                           onChange={handleFormChange}
                           required
-                          className="w-full px-3 py-2 bg-white/15 border border-white/30 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-2 bg-gray-800/80 border border-gray-600 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
                         >
                           <option value="" className="bg-gray-800">Select a club...</option>
                           {clubs.map((club) => (
@@ -263,7 +263,7 @@ export default function CreateEventPage() {
                         value={form.description}
                         onChange={handleFormChange}
                         rows={3}
-                        className="w-full px-3 py-2 bg-white/15 border border-white/30 rounded-md text-white placeholder:text-gray-300 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 bg-gray-800/80 border border-gray-600 rounded-md text-white placeholder:text-gray-300 font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
                       />
                     </div>
                   </div>
@@ -281,7 +281,7 @@ export default function CreateEventPage() {
                       type="button" 
                       variant="secondary" 
                       onClick={handleCancel}
-                      className="bg-white/15 border-white/30 text-white hover:bg-white/25 font-medium"
+                      className="bg-gray-700/80 border-gray-600 text-white hover:bg-gray-600/80 font-medium"
                     >
                       Cancel
                     </Button>

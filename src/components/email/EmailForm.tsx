@@ -65,22 +65,43 @@ export default function EmailForm({ onEmailSent, memberInfo }: EmailFormProps) {
       }
 
     
-      const { default: emailService } = await import('@/lib/emailService')
-      
-      const emailResult = await emailService.sendEmailToMember(
-        validateResult.memberData.email,
-        validateResult.memberData.name,
-        validateResult.emailData.subject,
-        validateResult.emailData.message,
-        validateResult.memberData.clubName,
-        validateResult.memberData.senderName
-      )
+      // Send email using server-side API
+      const emailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #2563eb;">Message from ${validateResult.memberData.clubName}</h2>
+          <p><strong>From:</strong> ${validateResult.memberData.senderName}</p>
+          <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            ${validateResult.emailData.message.replace(/\n/g, '<br>')}
+          </div>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+          <p style="color: #64748b; font-size: 14px;">
+            This email was sent from the Club Management System at BRAC University.
+          </p>
+        </div>
+      `
 
-      if (emailResult.success) {
-        const message = emailResult.error === 'Skipped fake email' 
-          ? 'Email skipped (fake email address)' 
+      const emailResponse = await fetch('/api/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: validateResult.memberData.email,
+          subject: `[${validateResult.memberData.clubName}] ${validateResult.emailData.subject}`,
+          html: emailHtml,
+          text: `From: ${validateResult.memberData.senderName} - ${validateResult.memberData.clubName}\n\n${validateResult.emailData.message}`
+        })
+      })
+
+      const emailResult = await emailResponse.json()
+
+      if (emailResponse.ok && emailResult.success) {
+        const successMessage = emailResult.provider === 'resend' 
+          ? 'Email sent successfully via Resend!' 
+          : emailResult.provider === 'nodemailer'
+          ? 'Email sent successfully via Nodemailer!'
           : 'Email sent successfully!'
-        showNotification('success', message)
+        showNotification('success', successMessage)
         setSubject('')
         setMessage('')
         onEmailSent?.(emailResult)

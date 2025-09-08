@@ -138,11 +138,22 @@ export async function GET(request: NextRequest) {
       db.notification.count()
     ])
 
-    const notificationsWithCount = notifications.map(notification => ({
-      ...notification,
-      recipients: JSON.parse(notification.recipients),
-      recipientCount: JSON.parse(notification.recipients).length
-    }))
+    const notificationsWithCount = notifications.map(notification => {
+      let recipients;
+      try {
+        // Try to parse as JSON array
+        recipients = JSON.parse(notification.recipients);
+      } catch (error) {
+        // If it fails, treat as single email string
+        recipients = [notification.recipients];
+      }
+      
+      return {
+        ...notification,
+        recipients: recipients,
+        recipientCount: recipients.length
+      };
+    })
 
     return NextResponse.json({
       notifications: notificationsWithCount,

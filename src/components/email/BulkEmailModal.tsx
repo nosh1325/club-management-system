@@ -82,31 +82,93 @@ export default function BulkEmailModal({ isOpen, onClose, clubs, onEmailSent }: 
       }
 
       
-      const { default: emailService } = await import('@/lib/emailService')
-      
+      // Use server-side email API instead of client-side service
       let totalSent = 0
       let totalSkipped = 0
       let totalFailed = 0
       const allResults = []
 
-      // Send emails for each club
+      // Send emails for each club using server-side API
       for (const [clubName, members] of Object.entries(result.membersByClub as Record<string, Array<{ id: string; name: string; email: string }>>)) {
-        const emailResult = await emailService.sendBulkEmails(
-          members,
-          result.emailData.subject,
-          result.emailData.message,
-          clubName,
-          result.senderName
-        )
-        
-        allResults.push({
-          club: clubName,
-          ...emailResult
-        })
-        
-        totalSent += emailResult.summary.sent
-        totalSkipped += emailResult.summary.skipped
-        totalFailed += emailResult.summary.failed
+        try {
+          // Send individual emails using our new API endpoint
+          let sent = 0
+          let failed = 0
+          const results = []
+
+          for (const member of members) {
+            try {
+              const emailHtml = `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2 style="color: #2563eb;">Message from ${clubName}</h2>
+                  <p><strong>From:</strong> ${result.senderName}</p>
+                  <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    ${result.emailData.message.replace(/\n/g, '<br>')}
+                  </div>
+                  <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+                  <p style="color: #64748b; font-size: 14px;">
+                    This email was sent from the Club Management System at BRAC University.
+                  </p>
+                </div>
+              `
+
+              const response = await fetch('/api/email/send', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  to: member.email,
+                  subject: `[${clubName}] ${result.emailData.subject}`,
+                  html: emailHtml,
+                  text: `From: ${result.senderName} - ${clubName}\n\n${result.emailData.message}`
+                }),
+              })
+
+              const emailResult = await response.json()
+              
+              if (response.ok && emailResult.success) {
+                sent++
+                results.push({ email: member.email, success: true, provider: emailResult.provider })
+              } else {
+                failed++
+                results.push({ email: member.email, success: false, error: emailResult.error })
+              }
+            } catch (error) {
+              failed++
+              results.push({ email: member.email, success: false, error: `Network error: ${error}` })
+            }
+
+            // Small delay between emails
+            await new Promise(resolve => setTimeout(resolve, 100))
+          }
+          
+          allResults.push({
+            club: clubName,
+            sent: sent,
+            failed: failed,
+            skipped: 0,
+            results: results
+          })
+          
+          totalSent += sent
+          totalFailed += failed
+        } catch (error) {
+          console.error(`Failed to send emails to ${clubName}:`, error)
+          allResults.push({
+            club: clubName,
+            sent: 0,
+            failed: members.length,
+            skipped: 0,
+            results: members.map(member => ({
+              success: false,
+              email: member.email,
+              error: 'Failed to send email'
+            }))
+          })
+          
+          totalFailed += members.length
+        }
       }
 
       const finalResult = {
